@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Platform, useWindowDimensions } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { 
-  NativeBaseProvider,
   VStack,
   Center,
   ScrollView,
@@ -13,7 +10,6 @@ import {
   Box,
   Input,
   InputGroup,
-  KeyboardAvoidingView,
 } from "native-base";
 
 function ScheduleBlock() {

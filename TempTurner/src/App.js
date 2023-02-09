@@ -5,19 +5,12 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { 
   NativeBaseProvider,
   VStack,
-  Center,
-  ScrollView,
-  HStack,
   Text,
-  Button,
-  Box,
-  Input,
-  InputGroup,
-  KeyboardAvoidingView,
 } from "native-base";
 import CurrentBlock from './CurrentBlock';
 import TargetBlock from './TargetBlock';
 import ScheduleBlock from './ScheduleBlock';
+import { styles, dims } from './Styles';
 
 // const {height, width} = useWindowDimensions();
 
@@ -28,7 +21,7 @@ function HomeScreen({ navigation }) {
   return (
     <NativeBaseProvider>
       <VStack pt="3" h="100%" space={4} alignItems="center">
-        
+
         <CurrentBlock />
         <TargetBlock />
         <ScheduleBlock />

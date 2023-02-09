@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Platform, useWindowDimensions } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { 
-  NativeBaseProvider,
   VStack,
   Center,
-  ScrollView,
   HStack,
   Text,
   Button,
-  Box,
-  Input,
-  InputGroup,
-  KeyboardAvoidingView,
 } from "native-base";
 
 function TargetBlock() {
