@@ -6,6 +6,7 @@ import {
   HStack,
   Text,
 } from "native-base";
+import { styles, dims } from './Styles';
 
 function CurrentBlock() {
   return(

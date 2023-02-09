@@ -7,6 +7,7 @@ import {
   Text,
   Button,
 } from "native-base";
+import { styles, dims } from './Styles';
 
 function TargetBlock() {
   const [timerCount, setTimer] = useState(10)

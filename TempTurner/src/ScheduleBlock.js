@@ -11,6 +11,7 @@ import {
   Input,
   InputGroup,
 } from "native-base";
+import { styles, dims } from './Styles';
 
 function ScheduleBlock() {
   const [scheduleRows, setScheduleRows] = useState([{
