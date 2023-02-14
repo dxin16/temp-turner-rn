@@ -14,59 +14,63 @@ import {
 import { styles, dims } from './Styles';
 
 function ScheduleBlock() {
+  const [numRows, setNumRows] = useState(0)
   const [scheduleRows, setScheduleRows] = useState([{
     num: "+",
     temp: "---",
     time: "--:--:--",
     color: "disabled",
+    index: 0
   }])
-
-  // Example row to demonstrate adding rows
-  const baseScheduleRow = {
-    num: "+",
-    temp: "---",
-    time: "--:--:--",
-    color: "disabled",
-  }
 
   // Function to create rows out of the scheduleRows
   // Should allow for adjustment on any row and update scheduleRows accordingly
   function InputtableRow({ row, key }) {
     var bgColor =
-      row.color == "active" ? "green.500" :
-      row.color == "waiting" ? "light.400" : "light.300"
+      row.color === "active" ? "green.500" :
+      row.color === "waiting" ? "light.400" : "light.300"
   
     var textColor = 
-      row.color == "disabled" ? "light.400" : "black"
+      row.color === "disabled" ? "light.400" : "black"
     
       return(
         <HStack w="100%" space={2}>
           <Center w="12%" bg={bgColor} borderWidth={1} outlineColor="black">
             <Button p="1" w="100%" variant="ghost" colorScheme="gray"
               onPress={
-                () => setScheduleRows(scheduleRows.concat(baseScheduleRow))}
+                () => {
+                  setScheduleRows(scheduleRows.concat({
+                    num: "+",
+                    temp: "---",
+                    time: "--:--:--",
+                    color: "disabled",
+                    index: numRows + 1,
+                  }))
+                  setNumRows(numRows + 1)
+                }    
+              }
             >
               <Text fontSize={24}>{row.num}</Text>
             </Button>
           </Center>
           <Center w="40%" bg={bgColor} borderWidth={1} outlineColor="black">
             <InputGroup w="100%" justifyContent="center">
-              <Input w="100%" p="1" fontSize={24} color={textColor} placeholder={row.temp} textAlign="center" 
-                onEndEditing={(newTemp) => {
-                  const newRows = scheduleRows.map((r, i) => {
-                    if (i === key) {
+              <Input w="100%" p="1" fontSize={24} color={textColor} placeholder={row.temp} textAlign="center"
+                onEndEditing={(e) => {
+                  const newRows = scheduleRows.map((r) => {
+                    if (r.index === row.index) {
                       return({
                         num: r.num,
-                        temp: newTemp + "°F",
+                        temp: e.nativeEvent.text + "°F",
                         time: r.time,
-                        color: r.color
+                        color: r.color,
+                        index: r.index,
                       })
                     }
                     return(r)
                   })
-                  //setScheduleRows(newRows)
+                  setScheduleRows(newRows)
                 }}
-                InputRightElement={<Text pr="2" fontSize={24}>°F</Text>} variant="unstyled"
               />
             </InputGroup>
           </Center>
@@ -104,7 +108,7 @@ function ScheduleBlock() {
           <VStack pl="4%" w="100%" space={1}>
             {scheduleRows.map((row, idx)=> {
               return(
-                <InputtableRow row={row} key={idx}/>
+                <InputtableRow row={row} key={idx} />
               )
             })}
           </VStack>
