@@ -8,14 +8,14 @@ This is the repo for Team 22's Temp Turner Mobile App (created in React Native).
 
 ## Setup
 
-To begin working in this repo, the first thing to do is to set up the React Native Development Environment ([Link to Docs here](https://reactnative.dev/docs/environment-setup)).
+To begin working in this repo, the first thing to do is to set up the React Native Development Environment ([Link to Docs here](https://reactnative.dev/docs/environment-setup)). I used Homebrew, as suggested by the docs, for many of the installs.
 
 Install Summary:
  - Node
  - Watchman
  - IOS Specific:
-    - Ruby
-    - Xcode
+    - Ruby (rbenv)
+    - Xcode (needs a Mac)
     - CocoaPods
  - Android Specific:
     - JDK (Zulu11)
@@ -29,11 +29,14 @@ Prepare two terminal windows/tabs. Both should be in the `TempTurner` directory.
 
 On the first terminal, call `npx react-native start` to initiate a metro server with watchman (this will take full control of the first terminal).
 
-On the second terminal, you can perform everything else needed to run the code. First call `npx pod-install` to install CocoaPods for IOS. Then call `npx react-native run-ios` and/or `npx react-native run-android` depending on which emulators you have available.
+On the second terminal, you can perform everything else needed to run the code. First call `npx pod-install` to install pods for IOS. Then call `npx react-native run-ios` and/or `npx react-native run-android` depending on which emulators you have available.
 
-The app should build on to the emulator and run when ready. The first build might take a little while, but it will be faster on subsequent ones.
+The app should build onto the emulator and run when ready. The first build might take a little while, but it will be faster on subsequent ones.
+
+Refer [here](https://reactnative.dev/docs/running-on-device) if you want to run on a physical device.
 
 Summary:
+ - Terminals in `TempTurner` directory
  - Terminal #1: `npx react-native start`
  - Terminal #2:
     - IOS Emulator: `npx pod-install` then `npx react-native run-ios`
@@ -46,4 +49,21 @@ The basic development process is to get the app running, then edit the files in 
 
 If you need new packages, call `npm i <package name>` then follow it with `npx pod-install`. 
 
-If you want to debug code, I've only been able to make it work with the Android Emulator, but just "shake" the device (or call `adb shell input keyevent 82`). You should see something come up in Safari/Google Chrome, and follow those instructions.
+If you want to debug code, I've only been able to make it work with the Android Emulator, but just "shake" the device (or call `adb shell input keyevent 82`). Click on debug in the menu that pops up, and you should see something come up in Safari/Google Chrome.
+
+## Current Progress
+
+For a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These, of course, correspond to the three main blocks you see on the app screen when it loads. 
+
+As for the other files, `App.js` is a high-level wrapper for the three blocks, and `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet.
+
+Main implementation goals:
+ - Send and Receive data over WiFi with the ESP32
+ - Update the app screen based on WiFi data
+ - Finish up Scheduling Block implementation
+ - Coordinate the Target Block with the Scheduling Block
+
+Feature goals:
+ - Implement `Styles.js`
+ - Work on aesthetics (app icon, splash screen, home screen)
+ - Storage of "recipes" / saved schedules
