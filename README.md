@@ -29,7 +29,15 @@ Prepare two terminal windows/tabs. Both should be in the `TempTurner` directory.
 
 On the first terminal, call `npx react-native start` to initiate a metro server with watchman (this will take full control of the first terminal).
 
-On the second terminal, you can perform everything else needed to run the code. First call `npx pod-install` to install pods for IOS. Then call `npx react-native run-ios` and/or `npx react-native run-android` depending on which emulators you have available.
+On the second terminal, you can perform everything else needed to run the code. I believe the first thing you have to do is call `npm install` on the packages I've used so far:
+ - `npm i @react-navigation/native`
+ - `npm i react-native-screens react-native-safe-area-context`
+    - These first two are packages for navigation, which I haven't used yet. They still need to be installed though.
+ - `npm install native-base react-native-svg@12.1.1 react-native-safe-area-context@3.3.2`
+    - This is the package used for basically all of the UI.
+ - If I forgot to list any of them here, the name of a missing package should be specified in an error if there are any.
+
+After installing the necessary packages, call `npx pod-install` to install pods for IOS. Then call `npx react-native run-ios` and/or `npx react-native run-android` depending on which emulators you have available.
 
 The app should build onto the emulator and run when ready. The first build might take a little while, but it will be faster on subsequent ones.
 
@@ -39,9 +47,12 @@ Summary:
  - Terminals in `TempTurner` directory
  - Terminal #1: `npx react-native start`
  - Terminal #2:
+    - First install necessary packages
     - IOS Emulator: `npx pod-install` then `npx react-native run-ios`
     - Android Emulator: `npx react-native run-android`
     - You can continue to use this terminal for anything else you need.
+
+After the first run, you will not need to call `npx pod-install` anymore until you install a new npm package.
 
 ## Development
 
