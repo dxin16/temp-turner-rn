@@ -9,6 +9,32 @@ import {
 import { styles, dims } from './Styles';
 
 function CurrentBlock() {
+  
+  const [lightStatus, setLightStatus] = useState("off")
+
+  // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
+  // useEffect(() => {
+  //   // fetch('10.44.47.202/26/on', {
+  //   //   method: 'POST',
+  //   //   headers: {
+  //   //     Accept: 'text/html',
+  //   //     'Content-Type': 'text/html',
+  //   //   },
+  //   //   body: JSON.stringify({
+  //   //     output26State: 'on',
+  //   //   }),
+  //   // })
+
+  //   fetch('10.44.47.202/26/on')
+  //     .then(response => response.json())
+  //     .then(json => {
+  //       setLightStatus(json.output26State)
+  //   })
+  //   .catch(error => {
+  //     console.error(error)
+  //   })
+  // }, [])
+  
   return(
     <Center w="95%" h="25%" bg="light.200" rounded="md" shadow={3}>
       <VStack bg="light.300">
@@ -34,7 +60,7 @@ function CurrentBlock() {
             <Text pb="25px" fontSize={28} color="orange.500">400°F</Text>
           </Center>
           <Center w="50%">
-            <Text pb="25px" fontSize={28} color="green.600">Low</Text>
+            <Text pb="25px" fontSize={28} color="green.600">{lightStatus}</Text>
           </Center>
         </HStack>
 

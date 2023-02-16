@@ -54,25 +54,23 @@ function ScheduleBlock() {
             </Button>
           </Center>
           <Center w="40%" bg={bgColor} borderWidth={1} outlineColor="black">
-            <InputGroup w="100%" justifyContent="center">
-              <Input w="100%" p="1" fontSize={24} color={textColor} placeholder={row.temp} textAlign="center"
-                onEndEditing={(e) => {
-                  const newRows = scheduleRows.map((r) => {
-                    if (r.index === row.index) {
-                      return({
-                        num: r.num,
-                        temp: e.nativeEvent.text + "°F",
-                        time: r.time,
-                        color: r.color,
-                        index: r.index,
-                      })
-                    }
-                    return(r)
-                  })
-                  setScheduleRows(newRows)
-                }}
-              />
-            </InputGroup>
+            <Input w="100%" p="1" fontSize={24} color={textColor} placeholder={row.temp} textAlign="center"
+              onEndEditing={(e) => {
+                const newRows = scheduleRows.map((r) => {
+                  if (r.index === row.index) {
+                    return({
+                      num: r.num,
+                      temp: e.nativeEvent.text + "°F",
+                      time: r.time,
+                      color: r.color,
+                      index: r.index,
+                    })
+                  }
+                  return(r)
+                })
+                setScheduleRows(newRows)
+              }}
+            />
           </Center>
           <Center w="40%" bg={bgColor} borderWidth={1} outlineColor="black">
             <Text fontSize={24} color={textColor}>{row.time}</Text>
