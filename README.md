@@ -33,7 +33,7 @@ On the second terminal, you can perform everything else needed to run the code. 
  - `npm i @react-navigation/native`
  - `npm i react-native-screens react-native-safe-area-context`
     - These first two are packages for navigation, which I haven't used yet. They still need to be installed though.
- - `npm install native-base react-native-svg@12.1.1 react-native-safe-area-context@3.3.2`
+ - `npm i native-base react-native-svg@12.1.1 react-native-safe-area-context@3.3.2`
     - This is the package used for basically all of the UI.
  - If I forgot to list any of them here, the name of a missing package should be specified in an error if there are any.
 
