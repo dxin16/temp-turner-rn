@@ -57,10 +57,10 @@ function CurrentBlock() {
         {/* Actual Values */}
         <HStack w="100%" h="35%">
         <Center w="50%">
-            <Text pb="25px" fontSize={28} color="orange.500">400°F</Text>
+            <Text pb="25px" fontSize={28} color="orange.500">400 °F</Text>
           </Center>
           <Center w="50%">
-            <Text pb="25px" fontSize={28} color="green.600">{lightStatus}</Text>
+            <Text pb="25px" fontSize={28} color="green.600">Low</Text>
           </Center>
         </HStack>
 

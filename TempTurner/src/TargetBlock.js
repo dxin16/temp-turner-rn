@@ -90,7 +90,7 @@ function TargetBlock() {
       {/* Actual Values */}
       <HStack w="100%" h="35%">
         <Center w="50%">
-          <Text pb="25px" fontSize={28} color="orange.500">400°F</Text>
+          <Text pb="25px" fontSize={28} color="orange.500">400 °F</Text>
         </Center>
         <Center w="50%">
           <VStack>

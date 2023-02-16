@@ -60,7 +60,7 @@ function ScheduleBlock() {
                   if (r.index === row.index) {
                     return({
                       num: r.num,
-                      temp: e.nativeEvent.text + "°F",
+                      temp: e.nativeEvent.text + " °F",
                       time: r.time,
                       color: r.color,
                       index: r.index,
