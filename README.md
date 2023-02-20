@@ -8,9 +8,9 @@ This is the repo for Team 22's Temp Turner Mobile App (created in React Native).
 
 ## Setup
 
-To begin working in this repo, the first thing to do is to set up the React Native Development Environment ([Link to Docs here](https://reactnative.dev/docs/environment-setup)). I used Homebrew, as suggested by the docs, for many of the installs.
+To begin working with the mobile app, the first thing to do is to set up the React Native Development Environment ([Link to Docs here](https://reactnative.dev/docs/environment-setup)). I used Homebrew, as suggested by the docs, for many of the installs.
 
-Install Summary:
+## Setup Summary
  - Node
  - Watchman
  - IOS Specific:
@@ -33,7 +33,7 @@ On the second terminal, you can perform everything else needed to run the code. 
  - `npm i @react-navigation/native`
  - `npm i react-native-screens react-native-safe-area-context`
     - These first two are packages for navigation, which I haven't used yet. They still need to be installed though.
- - `npm install native-base react-native-svg@12.1.1 react-native-safe-area-context@3.3.2`
+ - `npm i native-base react-native-svg@12.1.1 react-native-safe-area-context@3.3.2`
     - This is the package used for basically all of the UI.
  - If I forgot to list any of them here, the name of a missing package should be specified in an error if there are any.
 
@@ -43,7 +43,7 @@ The app should build onto the emulator and run when ready. The first build might
 
 Refer [here](https://reactnative.dev/docs/running-on-device) if you want to run on a physical device.
 
-Summary:
+## Running Summary
  - Terminals in `TempTurner` directory
  - Terminal #1: `npx react-native start`
  - Terminal #2:
@@ -62,7 +62,7 @@ If you need new packages, call `npm i <package name>` then follow it with `npx p
 
 If you want to debug code, I've only been able to make it work with the Android Emulator, but just "shake" the device (or call `adb shell input keyevent 82`). Click on debug in the menu that pops up, and you should see something come up in Safari/Google Chrome.
 
-## Current Progress
+## Current Progress (Mobile App)
 
 For a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These, of course, correspond to the three main blocks you see on the app screen when it loads. 
 
