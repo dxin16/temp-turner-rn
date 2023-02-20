@@ -14,14 +14,32 @@ import {
 import { styles, dims } from './Styles';
 
 function ScheduleBlock() {
-  const [numRows, setNumRows] = useState(0)
-  const [scheduleRows, setScheduleRows] = useState([{
+  const [numRows, setNumRows] = useState(2)
+  const [scheduleRows, setScheduleRows] = useState([
+    {
+      num: "1",
+      temp: "---",
+      time: "--:--:--",
+      color: "waiting",
+      index: 0
+    },
+    {
+      num: "+",
+      temp: "---",
+      time: "--:--:--",
+      color: "disabled",
+      index: 1
+    },
+  ])
+
+  const disabledRow =
+  {
     num: "+",
     temp: "---",
     time: "--:--:--",
     color: "disabled",
-    index: 0
-  }])
+    index: numRows + 1
+  }
 
   // Function to create rows out of the scheduleRows
   // Should allow for adjustment on any row and update scheduleRows accordingly
@@ -39,22 +57,25 @@ function ScheduleBlock() {
             <Button p="1" w="100%" variant="ghost" colorScheme="gray"
               onPress={
                 () => {
-                  setScheduleRows(scheduleRows.concat({
-                    num: "+",
+                  scheduleRows.pop()
+                  scheduleRows.push({
+                    num: numRows,
                     temp: "---",
                     time: "--:--:--",
-                    color: "disabled",
-                    index: numRows + 1,
-                  }))
+                    color: "waiting",
+                    index: numRows,
+                  })
                   setNumRows(numRows + 1)
+                  scheduleRows.push(disabledRow)
                 }    
               }
             >
               <Text fontSize={24}>{row.num}</Text>
             </Button>
           </Center>
-          <Center w="40%" bg={bgColor} borderWidth={1} outlineColor="black">
-            <Input w="100%" p="1" fontSize={24} color={textColor} placeholder={row.temp} textAlign="center"
+          <Center w="40%" bg={bgColor} borderWidth={1} borderColor={textColor}>
+            <Input w="100%" p="1" fontSize={24} placeholderTextColor={textColor} placeholder={row.temp} textAlign="center" variant="unstyled"
+              isDisabled={row.color === "disabled" ? true : false}
               onEndEditing={(e) => {
                 const newRows = scheduleRows.map((r) => {
                   if (r.index === row.index) {
@@ -72,11 +93,15 @@ function ScheduleBlock() {
               }}
             />
           </Center>
-          <Center w="40%" bg={bgColor} borderWidth={1} outlineColor="black">
+          <Center w="40%" bg={bgColor} borderWidth={1} borderColor={textColor}>
             <Text fontSize={24} color={textColor}>{row.time}</Text>
           </Center>
         </HStack>
       )
+  }
+
+  function AddRow() {
+
   }
 
   return(
