@@ -63,17 +63,17 @@ If you want to debug code, I've only been able to make it work with the Android 
 
 ## Current Progress (Mobile App)
 
-For a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These, of course, correspond to the three main blocks you see on the app screen when it loads. 
+For a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These, of course, correspond to the three main blocks you see on the app screen when it loads. Using `ScheduleContext.js` makes it possible to coordinate the Target Block with the Schedule Block.
 
-As for the other files, `App.js` is a high-level wrapper for the three blocks, and `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet.
+As for the other files, `App.js` is a high-level wrapper for the three blocks, and `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
 
 Main implementation goals:
  - Send and Receive data over WiFi with the ESP32
  - Update the app screen based on WiFi data
- - Finish up Scheduling Block implementation
- - Coordinate the Target Block with the Scheduling Block
+ - Finish up coordinating the Target Block with the Schedule Block
 
 Feature goals:
  - Implement `Styles.js`
  - Work on aesthetics (app icon, splash screen, home screen)
  - Storage of "recipes" / saved schedules
+ - Optimize Schedule Block + Target Block interactions
