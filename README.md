@@ -15,11 +15,11 @@ To begin working with the mobile app, the first thing to do is to set up the Rea
  - Watchman
  - IOS Specific:
     - Ruby (rbenv)
-    - Xcode (needs a Mac)
+    - Xcode (needs a Mac) (Provides IOS emulator)
     - CocoaPods
  - Android Specific:
     - JDK (Zulu11)
-    - Android Studio
+    - Android Studio (Provides Android emulator)
 
 ## Running
 
@@ -30,10 +30,9 @@ Prepare two terminal windows/tabs. Both should be in the `TempTurner` directory.
 On the first terminal, call `npx react-native start` to initiate a metro server with watchman (this will take full control of the first terminal).
 
 On the second terminal, you can perform everything else needed to run the code. I believe the first thing you have to do is call `npm install` on the packages I've used so far:
- - `npm i @react-navigation/native`
- - `npm i react-native-screens react-native-safe-area-context`
-    - These first two are packages for navigation, which I haven't used yet. They still need to be installed though.
- - `npm i native-base react-native-svg@12.1.1 react-native-safe-area-context@3.3.2`
+ - Follow the instructions [here.](https://reactnavigation.org/docs/getting-started/)
+    - This is the package for navigating between screens (will be used to switch to camera view).
+ - Follow the instrcutions [here](https://docs.nativebase.io/install-rn) in the "Existing Project" tab.
     - This is the package used for basically all of the UI.
  - If I forgot to list any of them here, the name of a missing package should be specified in an error if there are any.
 

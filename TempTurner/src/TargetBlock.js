@@ -49,7 +49,7 @@ function TargetBlock() {
     }
 
     if (keepRunning) {
-      if (timerCount === 0) {
+      if (timerCount === -1) {
         appStates.scheduleRowsObj.shift()
         appStates.setScheduleRows(appStates.scheduleRowsObj)
 
@@ -66,7 +66,7 @@ function TargetBlock() {
     let interval = setInterval(() => {
       setTimer(lastTimerCount => {
           lastTimerCount <= 1 && clearInterval(interval)
-          return lastTimerCount > 0 ? lastTimerCount - 1 : 0
+          return lastTimerCount > -1 ? lastTimerCount - 1 : 0
       })
     }, 1000) //each count lasts for a second
     //cleanup the interval on complete
