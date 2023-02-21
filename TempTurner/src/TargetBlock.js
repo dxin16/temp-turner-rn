@@ -73,17 +73,17 @@ function TargetBlock() {
     <VStack bg="light.300">
 
       {/* Section Title */}
-      <Text p="6px" h="30%" fontSize={24}>Current Setting:</Text>
+      <Text p="6px" h="30%" fontSize={24}>Current Setting</Text>
 
       {/* Value Labels */}
       <HStack w="100%" h="35%">
         <Center w="50%">
           <Text fontSize={20}>Target</Text>
-          <Text fontSize={20}>Temperature:</Text>
+          <Text fontSize={20}>Temperature</Text>
         </Center>
         <Center w="50%">
           <Text fontSize={20}>Time</Text>
-          <Text fontSize={20}>Left:</Text>
+          <Text fontSize={20}>Left</Text>
         </Center>
       </HStack>
 

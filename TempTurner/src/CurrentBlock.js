@@ -40,17 +40,17 @@ function CurrentBlock() {
       <VStack bg="light.300">
 
         {/* Section Title */}
-        <Text p="6px" h="30%" fontSize={24}>Current Status:</Text>
+        <Text p="6px" h="30%" fontSize={24}>Current Status</Text>
 
         {/* Value Labels */}
         <HStack w="100%" h="35%">
           <Center w="50%">
             <Text fontSize={20}>Current</Text>
-            <Text fontSize={20}>Temperature:</Text>
+            <Text fontSize={20}>Temperature</Text>
           </Center>
           <Center w="50%">
             <Text fontSize={20}>Smoke</Text>
-            <Text fontSize={20}>Level:</Text>
+            <Text fontSize={20}>Level</Text>
           </Center>
         </HStack>
 
