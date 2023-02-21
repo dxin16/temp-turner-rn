@@ -148,8 +148,8 @@ function ScheduleBlock() {
         </HStack>
 
         {/* Schedule Rows */}
-        <Box h="75%">
-          <ScrollView>
+        <Box h="60%">
+          <ScrollView py="5px" backgroundColor="coolGray.300">
             <VStack pl="4%" w="100%" space={1}>
               {appStates.scheduleRowsObj.map((row, idx)=> {
                 return(
@@ -159,6 +159,13 @@ function ScheduleBlock() {
             </VStack>
           </ScrollView>
         </Box>
+
+        {/* Start Button */}
+        <Center pt="4px" h="15%">
+          <Button p="2px" px="10px" onPress={() => appStates.setScheduleRunning(true)}>
+            <Text fontSize={18} color="white">Start Schedule</Text>
+          </Button>
+        </Center>
 
       </VStack>
       

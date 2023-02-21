@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Platform, useWindowDimensions } from 'react-native';
 import { 
   VStack,
@@ -8,9 +8,14 @@ import {
   Button,
 } from "native-base";
 import { styles, dims } from './Styles';
+import ScheduleContext from './ScheduleContext';
 
 function TargetBlock() {
-  const [timerCount, setTimer] = useState(10)
+  const appStates = useContext(ScheduleContext)
+  const [keepRunning, setKeepRunning] = useState(false)
+
+  const [timerCount, setTimer] = useState(0)
+  const [targetTemp, setTargetTemp] = useState("---")
 
   // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
   // useEffect(() => {
@@ -35,6 +40,29 @@ function TargetBlock() {
 
   // Setup basic accurate timer
   useEffect(() => {
+    if (appStates.scheduleRunningObj) {
+      appStates.setScheduleRunning(false)
+      setKeepRunning(true)
+
+      setTimer(appStates.scheduleRowsObj[0].intTime)
+      setTargetTemp(appStates.scheduleRowsObj[0].temp)
+    }
+
+    if (keepRunning) {
+      if (timerCount === 0) {
+        appStates.scheduleRowsObj.shift()
+        appStates.setScheduleRows(appStates.scheduleRowsObj)
+
+        if (appStates.scheduleRowsObj.length !== 0) {
+          setTimer(appStates.scheduleRowsObj[0].intTime)
+          setTargetTemp(appStates.scheduleRowsObj[0].temp)
+        }
+        else {
+          setKeepRunning(false)
+        }
+      }
+    }
+    
     let interval = setInterval(() => {
       setTimer(lastTimerCount => {
           lastTimerCount <= 1 && clearInterval(interval)
@@ -43,7 +71,7 @@ function TargetBlock() {
     }, 1000) //each count lasts for a second
     //cleanup the interval on complete
     return () => clearInterval(interval)
-  }, [timerCount]);
+  }, [timerCount, appStates.scheduleRunningObj]);
 
   // Function to manage time display to look correct for hh:mm:ss format
   function TimeDisplay() {
@@ -88,18 +116,13 @@ function TargetBlock() {
       </HStack>
 
       {/* Actual Values */}
-      <HStack w="100%" h="35%">
+      <HStack w="100%" h="35%" pb="25px">
         <Center w="50%">
-          <Text pb="25px" fontSize={28} color="orange.500">400 °F</Text>
+          <Text fontSize={28} color="orange.500">{targetTemp}</Text>
         </Center>
         <Center w="50%">
           <VStack>
             <TimeDisplay />
-            <Button p="0.5"
-              onPress={() => {
-                setTimer(timerCount + 10);
-              }}
-            >Add 10s</Button>
           </VStack>
         </Center>
       </HStack>
