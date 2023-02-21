@@ -11,6 +11,7 @@ import CurrentBlock from './CurrentBlock';
 import TargetBlock from './TargetBlock';
 import ScheduleBlock from './ScheduleBlock';
 import { styles, dims } from './Styles';
+import ScheduleContext from './ScheduleContext';
 
 // const {height, width} = useWindowDimensions();
 
@@ -43,13 +44,42 @@ function DetailsScreen() {
 // Actual App structure that is returned
 const Stack = createNativeStackNavigator();
 function App() {
+  const [scheduleRows, setScheduleRows] = useState([
+    {
+      num: "1",
+      temp: "---",
+      time: "--:--:--",
+      intTime: 0,
+      color: "waiting",
+      index: 0
+    },
+    {
+      num: "+",
+      temp: "---",
+      time: "--:--:--",
+      intTime: 0,
+      color: "disabled",
+      index: 1
+    },
+  ])
+  const [scheduleRunning, setScheduleRunning] = useState(false)
+  
+  const scheduleSettings = {
+    scheduleRowsObj: scheduleRows,
+    scheduleRunningObj: scheduleRunning,
+    setScheduleRows,
+    setScheduleRunning
+  }
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="The Temp Turner" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ScheduleContext.Provider value={scheduleSettings}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="The Temp Turner" component={HomeScreen} />
+          <Stack.Screen name="Details" component={DetailsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ScheduleContext.Provider>
   );
 }
 

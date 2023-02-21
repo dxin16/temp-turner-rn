@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Platform, useWindowDimensions } from 'react-native';
 import { 
   VStack,
@@ -13,8 +13,11 @@ import {
   FormControl,
 } from "native-base";
 import { styles, dims } from './Styles';
+import ScheduleContext from './ScheduleContext';
 
 function ScheduleBlock() {
+  const appStates = useContext(ScheduleContext)
+  
   // Modal useStates
   const [showTimeModal, setShowTimeModal] = useState(false)
   const [callingRow, setCallingRow] = useState(0)
@@ -22,26 +25,6 @@ function ScheduleBlock() {
 
   // Track number of rows
   const [numRows, setNumRows] = useState(2)
-
-  // Initialize to one row + new row ready
-  const [scheduleRows, setScheduleRows] = useState([
-    {
-      num: "1",
-      temp: "---",
-      time: "--:--:--",
-      intTime: 0,
-      color: "waiting",
-      index: 0
-    },
-    {
-      num: "+",
-      temp: "---",
-      time: "--:--:--",
-      intTime: 0,
-      color: "disabled",
-      index: 1
-    },
-  ])
 
   // Hold the row that cannot hold input (plus button only)
   const disabledRow =
@@ -70,8 +53,8 @@ function ScheduleBlock() {
           <Button p="1" w="100%" variant="ghost" colorScheme="gray"
             onPress={
               () => {
-                scheduleRows.pop()
-                scheduleRows.push({
+                appStates.scheduleRowsObj.pop()
+                appStates.scheduleRowsObj.push({
                   num: numRows,
                   temp: "---",
                   time: "--:--:--",
@@ -80,7 +63,7 @@ function ScheduleBlock() {
                   index: numRows,
                 })
                 setNumRows(numRows + 1)
-                scheduleRows.push(disabledRow)
+                appStates.scheduleRowsObj.push(disabledRow)
               }    
             }
           >
@@ -91,7 +74,7 @@ function ScheduleBlock() {
           <Input w="100%" p="1" fontSize={24} placeholderTextColor={textColor} placeholder={row.temp} textAlign="center" variant="unstyled"
             isDisabled={row.color === "disabled" ? true : false}
             onEndEditing={(e) => {
-              const newRows = scheduleRows.map((r) => {
+              const newRows = appStates.scheduleRowsObj.map((r) => {
                 if (r.index === row.index) {
                   return({
                     num: r.num,
@@ -104,7 +87,7 @@ function ScheduleBlock() {
                 }
                 return(r)
               })
-              setScheduleRows(newRows)
+              appStates.setScheduleRows(newRows)
             }}
           />
         </Center>
@@ -168,7 +151,7 @@ function ScheduleBlock() {
         <Box h="75%">
           <ScrollView>
             <VStack pl="4%" w="100%" space={1}>
-              {scheduleRows.map((row, idx)=> {
+              {appStates.scheduleRowsObj.map((row, idx)=> {
                 return(
                   <InputtableRow row={row} key={idx} />
                 )
@@ -240,7 +223,7 @@ function ScheduleBlock() {
                 setShowTimeModal(false)
 
                 var timeVals = ParseTime(rowTime)
-                const newRows = scheduleRows.map((r) => {
+                const newRows = appStates.scheduleRowsObj.map((r) => {
                   if (r.index === callingRow) {
                     return({
                       num: r.num,
@@ -253,7 +236,7 @@ function ScheduleBlock() {
                   }
                   return(r)
                 })
-                setScheduleRows(newRows)
+                appStates.setScheduleRows(newRows)
                 setRowTime([0, 0, 0])
               }}>
                 Save
