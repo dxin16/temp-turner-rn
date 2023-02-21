@@ -42,10 +42,12 @@ function TargetBlock() {
   useEffect(() => {
     if (appStates.scheduleRunningObj) {
       appStates.setScheduleRunning(false)
-      setKeepRunning(true)
 
-      setTimer(appStates.scheduleRowsObj[0].intTime)
-      setTargetTemp(appStates.scheduleRowsObj[0].temp)
+      if (appStates.scheduleRowsObj.length > 1) {
+        setKeepRunning(true)
+        setTimer(appStates.scheduleRowsObj[0].intTime)
+        setTargetTemp(appStates.scheduleRowsObj[0].temp)
+      }
     }
 
     if (keepRunning) {
@@ -53,12 +55,13 @@ function TargetBlock() {
         appStates.scheduleRowsObj.shift()
         appStates.setScheduleRows(appStates.scheduleRowsObj)
 
-        if (appStates.scheduleRowsObj.length !== 0) {
+        if (appStates.scheduleRowsObj.length > 1) {
           setTimer(appStates.scheduleRowsObj[0].intTime)
           setTargetTemp(appStates.scheduleRowsObj[0].temp)
         }
         else {
           setKeepRunning(false)
+          setTargetTemp("---")
         }
       }
     }
@@ -80,15 +83,15 @@ function TargetBlock() {
     var secs = timerCount % 3600 % 60
 
     var hrsDisp = 
-      (hrs == 0) ? "00" : 
+      (hrs <= 0) ? "00" : 
       (hrs < 10) ? "0" + hrs.toString() : hrs.toString()
 
     var minsDisp = 
-      (mins == 0) ? "00" : 
+      (mins <= 0) ? "00" : 
       (mins < 10) ? "0" + mins.toString() : mins.toString()
   
     var secsDisp = 
-      (secs == 0) ? "00" : 
+      (secs <= 0) ? "00" : 
       (secs < 10) ? "0" + secs.toString() : secs.toString()
 
     return(
