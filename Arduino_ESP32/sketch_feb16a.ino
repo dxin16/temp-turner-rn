@@ -1,41 +1,76 @@
-// Sensor is connected to GPIO 34 (Analog ADC1_CH6) 
-const int pin_temp_sen = 34;
-const int pin_smk_sen= 36;
-const int pin_current_fb = 25;
-const int pin_target_fb = 26;
+#include <WiFi.h>
+#include <WebServer.h>
 
-//hi
-// variable for storing the potentiometer value
-int alg_temp_sen = 0;
-int alg_smk_sen = 0;
-int dgl_current_fb = 0;
-int dgl_target_fb = 0;
-int target_tmp_app = 0;
+// Replace with your network credentials
+const char* ssid = "REPLACE_THIS";
+const char* password = "REPLACE_THIS";
 
+// Create an instance of the web server
+WebServer server(80);
+
+// Analog pins for temperature and smoke sensors
+const int tempPin = 34;
+const int smokePin = 35;
+
+// Current temperature and smoke level
+int currentTemp = 0;
+int currentSmoke = 0;
+
+// Target temperature
+int targetTemp = 0;
 
 void setup() {
+  // Initialize serial communication
   Serial.begin(115200);
-  delay(1000);
+
+  //Start from Web:
+  // Connect to Wi-Fi network
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting to Wi-Fi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println(".");
+  }
+
+  // Print local IP address
+  Serial.println("Connected to Wi-Fi");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  // Route for the root web page
+  server.on("/", HTTP_GET, [](){
+    String html = "<html><body>";
+    html += "<h1>Current Temperature: " + String(currentTemp) + "</h1>";
+    html += "<h1>Current Smoke Level: " + String(currentSmoke) + "</h1>";
+    html += "<h1>Target Temperature: " + String(targetTemp) + "</h1>";
+    html += "<form method='POST' action='/target'>";
+    html += "<label for='temp'>Target Temperature:</label>";
+    html += "<input type='number' id='temp' name='temp'>";
+    html += "<input type='submit' value='Submit'>";
+    html += "</form></body></html>";
+    server.send(200, "text/html", html);
+  });
+
+  // Route for setting the target temperature
+  server.on("/target", HTTP_POST, [](){
+    targetTemp = server.arg("temp").toInt();
+    server.send(200, "text/plain", "Target temperature set to: " + String(targetTemp));
+  });
+
+  // Start the server
+  server.begin();
+
+  // Initialize analog pins
+  pinMode(tempPin, INPUT);
+  pinMode(smokePin, INPUT);
 }
 
 void loop() {
-  // Reading potentiometer value
-  alg_temp = analogRead(pin_temp_sen);
-  smk_stove = analogRead(pin_smk_sen);
-  Serial.println(alg_temp);
-  Serial.println(smk_stove);
+  // Read analog sensors
+  currentTemp = analogRead(tempPin);
+  currentSmoke = analogRead(smokePin);
 
-
-  //Communicated to App; send current temperature ane receive target temparature.
-  //target_tmp_app = //HTTP request
-  //Send current temperature.
-
-  //Converting to analog signal for feedback system.
-  dgl_current_fb = alg_temp/16
-
-  dacWrite(pin_current_fb, Value);
-  dacWrite(pin_target_fb, Value);
-
-
-  delay(1000);
+  // Update web page
+  server.handleClient();
+  delay(10);
 }
