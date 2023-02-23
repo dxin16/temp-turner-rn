@@ -4,7 +4,7 @@ const int pin_smk_sen= 36;
 const int pin_current_fb = 25;
 const int pin_target_fb = 26;
 
-
+//hi
 // variable for storing the potentiometer value
 int alg_temp_sen = 0;
 int alg_smk_sen = 0;
