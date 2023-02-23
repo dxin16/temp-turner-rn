@@ -39,7 +39,22 @@ function ScheduleBlock() {
 
   useEffect(() => {
     
-  }, [appStates.scheduleRowsObj])
+    const newRows = appStates.scheduleRowsObj.map((r) => {
+      if (r.index === appStates.scheduleRowsObj.at(0).index) {
+        return({
+          num: r.num,
+          temp: r.temp,
+          time: r.time,
+          intTime: r.intTime,
+          color: "active",
+          index: r.index,
+        })
+      }
+      return(r)
+    })
+    appStates.setScheduleRows(newRows)
+
+  }, [appStates.scheduleRowsObj.length])
 
   // Function to create rows out of the scheduleRows
   // Allow for adjustment of temp or time on any row and updates scheduleRows accordingly
@@ -186,7 +201,11 @@ function ScheduleBlock() {
             <HStack space={1}>
               <FormControl w="30%">
                 <FormControl.Label>Hours</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" value={rowTime[0] > 0 ? rowTime[0].toString() : ""}
+                <Input p="1" fontSize={18} textAlign="center" 
+                  value={
+                    rowTime[0] == 0 ? "00" : 
+                    rowTime[0] < 10 ? "0" + rowTime[0].toString() : rowTime[0].toString()
+                  }
                   onChangeText={(text) => {
                     const newRowTime = [parseInt(text), rowTime[1], rowTime[2]]
                     setRowTime(newRowTime)
@@ -201,7 +220,11 @@ function ScheduleBlock() {
               
               <FormControl w="30%">
                 <FormControl.Label>Minutes</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" value={rowTime[1] > 0 ? rowTime[1].toString() : ""}
+                <Input p="1" fontSize={18} textAlign="center" 
+                  value={
+                    rowTime[1] == 0 ? "00" : 
+                    rowTime[1] < 10 ? "0" + rowTime[1].toString() : rowTime[1].toString()
+                  }
                   onChangeText={(text) => {
                     const newRowTime = [rowTime[0], parseInt(text), rowTime[2]]
                     setRowTime(newRowTime)
@@ -216,7 +239,11 @@ function ScheduleBlock() {
 
               <FormControl w="30%">
                 <FormControl.Label>Seconds</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" value={rowTime[2] > 0 ? rowTime[2].toString() : ""}
+                <Input p="1" fontSize={18} textAlign="center" 
+                  value={
+                    rowTime[2] == 0 ? "00" : 
+                    rowTime[2] < 10 ? "0" + rowTime[2].toString() : rowTime[2].toString()
+                  }
                   onChangeText={(text) => {
                     const newRowTime = [rowTime[0], rowTime[1], parseInt(text)]
                     setRowTime(newRowTime)
