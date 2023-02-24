@@ -4,7 +4,7 @@
 
 Purdue Spring 2023 - ECE 49022 Section 2
 
-This is the repo for Team 22's Temp Turner Mobile App (created in React Native). Most of the files contained are standard files that React Native requires to run. The main Temp Turner code implementation can be found in `TempTurner/src`. Code involving the ESP32 can be found in `Arduino_ESP32`.
+This is the repo for Team 22's Temp Turner Mobile App (created in React Native). Most of the files contained are standard files that React Native requires to run. The main Temp Turner code implementation can be found in `TempTurner/src`. Code involving the ESP32 can be found in `Arduino_ESP32`. Some code for the motor will also be available.
 
 ## Setup
 

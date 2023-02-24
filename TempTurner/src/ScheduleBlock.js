@@ -59,6 +59,7 @@ function ScheduleBlock() {
   // Function to create rows out of the scheduleRows
   // Allow for adjustment of temp or time on any row and updates scheduleRows accordingly
   function InputtableRow({ row, key }) {
+    // Use the color info of the row to determine its appearance
     var bgColor =
       row.color === "active" ? "green.500" :
       row.color === "waiting" ? "light.400" : "light.300"
@@ -68,6 +69,10 @@ function ScheduleBlock() {
 
     return(
       <HStack w="100%" space={2}>
+
+        {/* This first button creates a new row */}
+        {/* For now, every row has it, but ultimately only the "plus" row should have it */}
+        {/* The other rows will have a menu when you click on their number that allows for managing them */}
         <Center w="12%" bg={bgColor} borderWidth={1} outlineColor="black">
           <Button p="1" w="100%" variant="ghost" colorScheme="gray"
             onPress={
@@ -89,6 +94,9 @@ function ScheduleBlock() {
             <Text fontSize={24}>{row.num}</Text>
           </Button>
         </Center>
+
+        {/* This is the input temperature area for each row */}
+        {/* It will update the scheduleRows array when the user inputs a value and hits enter/return */}
         <Center w="40%" bg={bgColor} borderWidth={1} borderColor={textColor}>
           <Input w="100%" p="1" fontSize={24} placeholderTextColor={textColor} placeholder={row.temp} textAlign="center" variant="unstyled"
             isDisabled={row.color === "disabled" ? true : false}
@@ -110,6 +118,10 @@ function ScheduleBlock() {
             }}
           />
         </Center>
+
+        {/* This is the input time area for each row */}
+        {/* It is disabled for the "plus" row, but otherwise will call the modal at the bottom of this file */}
+        {/* The value should be saved when the user finishes inputting values in the modal */}
         <Center w="40%" bg={bgColor} borderWidth={1} borderColor={textColor}>
           <Button p="1" variant="unstyled" 
             onPress={() => {
@@ -117,7 +129,6 @@ function ScheduleBlock() {
                 setCallingRow(row.index)
                 setShowTimeModal(true)
               }
-
             }}>
             <Text fontSize={24} color={textColor}>{row.time}</Text>
           </Button>
@@ -126,7 +137,8 @@ function ScheduleBlock() {
     )
   }
 
-  // Takes the array rowTime and creates string to display and int value for the TargetBlock.
+  // Takes the times array and returns array containing string to display and int value for the Target Block
+  // Basically the TimeDisplay in the Target Block
   function ParseTime(times) {
     var hrs = times[0]
     var mins = times[1]
@@ -196,8 +208,9 @@ function ScheduleBlock() {
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
           <Modal.Header>Set Time</Modal.Header>
-          <Modal.Body>
 
+          {/* The body holds the input labels and input areas */}
+          <Modal.Body>
             <HStack space={1}>
               <FormControl w="30%">
                 <FormControl.Label>Hours</FormControl.Label>
@@ -251,8 +264,8 @@ function ScheduleBlock() {
                 />
               </FormControl>
             </HStack>
-
           </Modal.Body>
+
           <Modal.Footer>
             <Button.Group space={2}>
               <Button variant="ghost" colorScheme="blueGray" onPress={() => {

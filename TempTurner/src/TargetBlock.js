@@ -11,38 +11,44 @@ import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
 
 function TargetBlock() {
+  // Grab the ScheduleContext to access shared state variables
   const appStates = useContext(ScheduleContext)
+
+  // Create states to manage changes based on ScheduleContext changes
   const [keepRunning, setKeepRunning] = useState(false)
 
+  // Set the target and timer displays
   const [timerCount, setTimer] = useState(0)
   const [targetTemp, setTargetTemp] = useState("---")
 
-  // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
-  // useEffect(() => {
-  //   fetch('10.44.47.202/26/on', {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'text/html',
-  //       'Content-Type': 'text/html',
-  //     },
-  //     body: JSON.stringify({
-  //       output26State: 'on',
-  //     }),
-  //   })
-  //   //   .then(response => response.json())
-  //   //   .then(json => {
-  //   //     setLightStatus(json.output26State)
-  //   // })
-  //   // .catch(error => {
-  //   //   console.error(error)
-  //   // })
-  // }, [])
+  // Temporary testing variable to control http request
+  const [reqTries, setReqTries] = useState(0)
 
-  // Setup basic accurate timer
+  // Send data from ESP32 (http post -> ESP32 webpage @ its ip)
   useEffect(() => {
+    fetch('http://172.20.10.14/target', {
+      method: 'POST',
+      headers: {
+        Accept: 'text/html',
+        'Content-Type': 'text/html',
+      },
+      body: JSON.stringify({
+        targetTemperature: {targetTemp},
+      }),
+    })
+    .catch(error => {
+      console.error(error)
+    })
+  }, [reqTries])
+
+  // Cause changes based on ScheduleContext
+  useEffect(() => {
+    // When the Start Schedule button is pressed, this will change to true
     if (appStates.scheduleRunningObj) {
       appStates.setScheduleRunning(false)
 
+      // If there's only one row, it should be the disabled one with the plus button
+      // So, only try to retrieve the row if there is more than one row.
       if (appStates.scheduleRowsObj.length > 1) {
         setKeepRunning(true)
         setTimer(appStates.scheduleRowsObj[0].intTime)
@@ -50,8 +56,12 @@ function TargetBlock() {
       }
     }
 
+    // Target Block maintains its own "isRunning" variable
+    // Update display when timer hits 0 (-1 just so the value 00:00:00 actually shows up)
     if (keepRunning) {
       if (timerCount === -1) {
+        // Shift should remove the first index of the scheduleRows array
+        // TODO: This doesn't update for the scheduling block yet for some reason
         appStates.scheduleRowsObj.shift()
         appStates.setScheduleRows(appStates.scheduleRowsObj)
 
@@ -66,13 +76,13 @@ function TargetBlock() {
       }
     }
     
+    // Setup the basic timer
     let interval = setInterval(() => {
       setTimer(lastTimerCount => {
           lastTimerCount <= 1 && clearInterval(interval)
           return lastTimerCount > -1 ? lastTimerCount - 1 : 0
       })
-    }, 1000) //each count lasts for a second
-    //cleanup the interval on complete
+    }, 1000)
     return () => clearInterval(interval)
   }, [timerCount, appStates.scheduleRunningObj]);
 
@@ -106,6 +116,11 @@ function TargetBlock() {
       {/* Section Title */}
       <Text p="6px" h="30%" fontSize={24}>Current Setting</Text>
 
+      {/* Button to send a post request */}
+      <Center>
+        <Button p="1" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Send</Button>
+      </Center>
+
       {/* Value Labels */}
       <HStack w="100%" h="35%">
         <Center w="50%">
@@ -124,9 +139,7 @@ function TargetBlock() {
           <Text fontSize={28} color="orange.500">{targetTemp}</Text>
         </Center>
         <Center w="50%">
-          <VStack>
-            <TimeDisplay />
-          </VStack>
+          <TimeDisplay />
         </Center>
       </HStack>
 

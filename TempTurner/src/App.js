@@ -13,16 +13,16 @@ import ScheduleBlock from './ScheduleBlock';
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
 
-// const {height, width} = useWindowDimensions();
 
-// Base function to show the main screen
-// Use Native Base for UI - sectioning off important parts of app
-// Primary UI structure is VStacks and HStacks with various blocks
+// Main screen
+// Use Native Base for UI - sectioning off parts of app
+// Primary UI structure is VStacks and HStacks with various blocks contained in the stacks
 function HomeScreen({ navigation }) {
   return (
     <NativeBaseProvider>
       <VStack pt="3" h="100%" space={4} alignItems="center">
 
+        {/* Main three blocks; defined in their own .js files */}
         <CurrentBlock />
         <TargetBlock />
         <ScheduleBlock />
@@ -32,7 +32,7 @@ function HomeScreen({ navigation }) {
   );
 }
 
-// Example implementation of navigation
+// Example second screen for navigation
 function DetailsScreen() {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -41,9 +41,11 @@ function DetailsScreen() {
   );
 }
 
-// Actual App structure that is returned
+// Main App structure that is returned
 const Stack = createNativeStackNavigator();
 function App() {
+
+  // Create necessary states for the ScheduleContext
   const [scheduleRows, setScheduleRows] = useState([
     {
       num: "1",
@@ -64,6 +66,7 @@ function App() {
   ])
   const [scheduleRunning, setScheduleRunning] = useState(false)
   
+  // Define the primary ScheduleContext values
   const scheduleSettings = {
     scheduleRowsObj: scheduleRows,
     scheduleRunningObj: scheduleRunning,
@@ -71,6 +74,7 @@ function App() {
     setScheduleRunning
   }
 
+  // Return/render the main app function
   return (
     <ScheduleContext.Provider value={scheduleSettings}>
       <NavigationContainer>
