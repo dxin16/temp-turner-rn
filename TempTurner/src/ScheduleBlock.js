@@ -44,7 +44,7 @@ function ScheduleBlock() {
       currentRows = appStates.scheduleRowsObj
       currentRows.shift()
       appStates.setScheduleRows(currentRows)
-      
+
       setNumRows(appStates.scheduleRowsObj.length)
       appStates.setUpdateTarget(true)
     }
@@ -171,11 +171,18 @@ function ScheduleBlock() {
   }
 
   return(
-    <Center w="95%" h="42%" bg="light.200" rounded="md" shadow={3}>
-      <VStack w="100%" bg="light.300">
+    <Center w="95%" h="42%" bg="light.300" rounded="md" shadow={3}>
+      <VStack w="100%">
 
         {/* Section Title */}
-        <Text p="6px" h="15%" fontSize={24}>Scheduling</Text>
+        <HStack p="6px" h="15%" justifyContent="space-between">
+          <Text w="50%" fontSize={24}>Scheduling</Text>
+          <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="blue" bg="darkBlue.100"
+            onPress={() => appStates.setUpdateTarget(true)}
+          >
+            <Text fontSize={16} color="blue.600">Start Schedule</Text>
+          </Button>
+        </HStack>
 
         {/* Value Labels */}
         <HStack pl="4%" pb="4px" w="100%" h="10%" space={2}>
@@ -191,8 +198,8 @@ function ScheduleBlock() {
         </HStack>
 
         {/* Schedule Rows */}
-        <Box h="60%">
-          <ScrollView py="5px" backgroundColor="coolGray.300">
+        <Box h="75%">
+          <ScrollView py="5px">
             <VStack pl="4%" w="100%" space={1}>
               {appStates.scheduleRowsObj.map((row, idx)=> {
                 return(
@@ -204,11 +211,11 @@ function ScheduleBlock() {
         </Box>
 
         {/* Start Button */}
-        <Center pt="4px" h="15%">
+        {/* <Center pt="4px" h="15%">
           <Button p="2px" px="10px" onPress={() => appStates.setUpdateTarget(true)}>
             <Text fontSize={18} color="white">Start Schedule</Text>
           </Button>
-        </Center>
+        </Center> */}
 
       </VStack>
       

@@ -115,8 +115,8 @@ function TargetBlock() {
   }
 
   return(
-    <Center w="95%" h="25%" bg="light.200" rounded="md" shadow={3}>
-    <VStack bg="light.300">
+    <Center w="95%" h="25%" bg="light.300" rounded="md" shadow={3}>
+    <VStack>
 
       {/* Section Title */}
       <Text p="6px" h="30%" fontSize={24}>Current Setting</Text>

@@ -6,10 +6,11 @@ import {
   HStack,
   Text,
   Button,
+  Box,
 } from "native-base";
 import { styles, dims } from './Styles';
 
-function CurrentBlock() {
+function CurrentBlock({ navi }) {
   // State variables to contain wifi-related info
   // reqTries is a temporary way to control and test the sending of http requests
   const [espData, setEspData] = useState()
@@ -29,11 +30,19 @@ function CurrentBlock() {
   
   // Render structures needed for the Current Block
   return(
-    <Center w="95%" h="25%" bg="light.200" rounded="md" shadow={3}>
-      <VStack bg="light.300">
+    <Center w="95%" h="25%" bg="light.300" rounded="md" shadow={3}>
+      <VStack>
 
         {/* Section Title */}
-        <Text p="6px" h="30%" /* h="19%" */ fontSize={24}>Current Status {espData}</Text>
+        <HStack p="6px" h="30%" justifyContent="space-between">
+          <Text w="50%" fontSize={24}>Current Status</Text>
+          <Button w="40%" h="70%" p="3px" variant="ghost" colorScheme="blue" bg="darkBlue.100"
+            onPress={() => navi.navigate("Camera View")}
+          >
+            <Text fontSize={16} color="blue.600">{"View Camera >"}</Text>
+          </Button>
+        </HStack>
+        
 
         {/* Button to send a get request */}
         {/* <Center>

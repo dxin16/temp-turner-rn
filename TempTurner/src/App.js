@@ -23,7 +23,7 @@ function HomeScreen({ navigation }) {
       <VStack pt="3" h="100%" space={4} alignItems="center">
 
         {/* Main three blocks; defined in their own .js files */}
-        <CurrentBlock />
+        <CurrentBlock navi={navigation}/>
         <TargetBlock />
         <ScheduleBlock />
 
@@ -33,11 +33,13 @@ function HomeScreen({ navigation }) {
 }
 
 // Example second screen for navigation
-function DetailsScreen() {
+function CameraScreen() {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-    </View>
+    <NativeBaseProvider>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Camera Screen</Text>
+      </View>
+    </NativeBaseProvider>
   );
 }
 
@@ -84,7 +86,7 @@ function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="The Temp Turner" component={HomeScreen} />
-          <Stack.Screen name="Details" component={DetailsScreen} />
+          <Stack.Screen name="Camera View" component={CameraScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ScheduleContext.Provider>
