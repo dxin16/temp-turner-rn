@@ -64,17 +64,21 @@ function App() {
       index: 1
     },
   ])
-  const [scheduleRunning, setScheduleRunning] = useState(false)
+  const [updateTarget, setUpdateTarget] = useState(false)
+  const [updateSchedule, setUpdateSchedule] = useState(false)
+
   
-  // Define the primary ScheduleContext values
+  // Define the ScheduleContext values
   const scheduleSettings = {
     scheduleRowsObj: scheduleRows,
-    scheduleRunningObj: scheduleRunning,
+    targetBool: updateTarget,
+    scheduleBool: updateSchedule,
     setScheduleRows,
-    setScheduleRunning
+    setUpdateTarget,
+    setUpdateSchedule,
   }
 
-  // Return/render the main app function
+  // Return/render the main app
   return (
     <ScheduleContext.Provider value={scheduleSettings}>
       <NavigationContainer>

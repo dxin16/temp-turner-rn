@@ -38,23 +38,32 @@ function ScheduleBlock() {
   }
 
   useEffect(() => {
-    
-    const newRows = appStates.scheduleRowsObj.map((r) => {
-      if (r.index === appStates.scheduleRowsObj.at(0).index) {
-        return({
-          num: r.num,
-          temp: r.temp,
-          time: r.time,
-          intTime: r.intTime,
-          color: "active",
-          index: r.index,
-        })
-      }
-      return(r)
-    })
-    appStates.setScheduleRows(newRows)
+    if (appStates.scheduleBool && appStates.scheduleRowsObj.length > 1) {
+      appStates.setUpdateSchedule(false)
 
-  }, [appStates.scheduleRowsObj.length])
+      currentRows = appStates.scheduleRowsObj
+      currentRows.shift()
+      appStates.setScheduleRows(currentRows)
+      
+      setNumRows(appStates.scheduleRowsObj.length)
+      appStates.setUpdateTarget(true)
+    }
+    // const newRows = appStates.scheduleRowsObj.map((r) => {
+    //   if (r.index === appStates.scheduleRowsObj.at(0).index) {
+    //     return({
+    //       num: r.num,
+    //       temp: r.temp,
+    //       time: r.time,
+    //       intTime: r.intTime,
+    //       color: "active",
+    //       index: r.index,
+    //     })
+    //   }
+    //   return(r)
+    // })
+    // appStates.setScheduleRows(newRows)
+
+  }, [appStates.scheduleBool])
 
   // Function to create rows out of the scheduleRows
   // Allow for adjustment of temp or time on any row and updates scheduleRows accordingly
@@ -196,7 +205,7 @@ function ScheduleBlock() {
 
         {/* Start Button */}
         <Center pt="4px" h="15%">
-          <Button p="2px" px="10px" onPress={() => appStates.setScheduleRunning(true)}>
+          <Button p="2px" px="10px" onPress={() => appStates.setUpdateTarget(true)}>
             <Text fontSize={18} color="white">Start Schedule</Text>
           </Button>
         </Center>

@@ -16,16 +16,16 @@ function CurrentBlock() {
   const [reqTries, setReqTries] = useState(0)
 
   // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
-  useEffect(() => {
-    fetch('http://172.20.10.14')
-      .then(response => response.text())
-      .then(text => {
-        setEspData(text)       // Necessary values should be retrievable from text using regexes
-    })
-    .catch(error => {
-      console.error(error)
-    })
-  }, [reqTries])
+  // useEffect(() => {
+  //   fetch('http://localhost:12345') //http://172.20.10.14
+  //     .then(response => response.text())
+  //     .then(text => {
+  //       setEspData(text)       // Necessary values should be retrievable from text using regexes
+  //   })
+  //   .catch(error => {
+  //     console.error(error)
+  //   })
+  // }, [reqTries])
   
   // Render structures needed for the Current Block
   return(
@@ -33,12 +33,12 @@ function CurrentBlock() {
       <VStack bg="light.300">
 
         {/* Section Title */}
-        <Text p="6px" h="20%" fontSize={24}>Current Status</Text>
+        <Text p="6px" h="30%" /* h="19%" */ fontSize={24}>Current Status {espData}</Text>
 
         {/* Button to send a get request */}
-        <Center>
-          <Button p="1" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Request</Button>
-        </Center>
+        {/* <Center>
+          <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Request</Button>
+        </Center> */}
 
         {/* Value Labels */}
         <HStack w="100%" h="35%">
