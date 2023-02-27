@@ -62,8 +62,8 @@ On the first terminal, call `npx react-native start` to initiate a metro server 
 
 On the second terminal, you can perform everything else needed to run the code. I believe the first thing you have to do is call `npm install` on the packages I've used so far:
  - Follow the instructions [here.](https://reactnavigation.org/docs/getting-started/)
-    - This is the package for navigating between screens (will be used to switch to camera view).
- - Follow the instrcutions [here](https://docs.nativebase.io/install-rn) in the "Existing Project" tab.
+    - This is the package for navigating between screens.
+ - Follow the instructions [here](https://docs.nativebase.io/install-rn) in the "Existing Project" tab.
     - This is the package used for basically all of the UI.
  - If I forgot to list any of them here, the name of a missing package should be specified in an error if there are any.
 
