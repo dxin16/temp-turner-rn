@@ -24,7 +24,7 @@ function TargetBlock() {
 
   // Send data from ESP32 (http post -> ESP32 webpage @ its ip)
   // useEffect(() => {
-  //   fetch('http://172.20.10.14/target, {
+  //   fetch('http://172.20.10.14/target', {
   //     method: 'POST',
   //     headers: {
   //       Accept: 'text/html',

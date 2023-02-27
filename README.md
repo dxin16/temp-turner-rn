@@ -2,15 +2,46 @@
 
 ## Introduction
 
-Purdue Spring 2023 - ECE 49022 Section 2
+Purdue Spring 2023 - ECE 49022 Section 2 - Team 22: The Temp Turner
 
-This is the repo for Team 22's Temp Turner Mobile App (created in React Native). Most of the files contained are standard files that React Native requires to run. The main Temp Turner code implementation can be found in `TempTurner/src`. Code involving the ESP32 can be found in `Arduino_ESP32`. Some code for the motor will also be available.
+This is the repo for our project's code. Most of the files contained are standard files that React Native requires to run. The main Temp Turner code implementation can be found in `TempTurner/src`. Code involving the ESP32 and the motor can be found in `Arduino_ESP32`.
 
-## Setup
+## Current Progress (Mobile App)
+
+As a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These correspond to the three main blocks you see on the app screen when it loads. Using `ScheduleContext.js` makes it possible to coordinate the Target Block with the Schedule Block.
+
+For the other files, `App.js` is a high-level wrapper for the three blocks, and `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
+
+Main remaining goals:
+ - Finish up http request integration
+   - Display GET results in the Current Block
+   - Confirm POST target temperature works
+   - Manage request failures
+ - Clean up input areas
+ - Add Schedule Block input validation
+ - Add in more graphics
+   - Visual Indicators for temperature, smoke, time
+   - App Icon and Splash Screen
+   - Overall app appearance and style
+
+Additional goals:
+ - Implement `Styles.js` to accomodate many phone sizes
+ - Storage of "recipes" / saved schedules
+
+## Current Progress (ESP32 and Motor)
+As a brief summary of files in `Arduino_ESP32`, `MainPart.ino` contains the implementation for the ESP32 to connect to WiFi, then host and maintain a web server. Motor control is implemented in `Motor.ino` and in the folder `Arduino_ESP32/fbss_mt_demo`.
+
+Main remaining goals:
+
+Additional goals:
+
+## Working with the Mobile App / React Native
+
+### Setup
 
 To begin working with the mobile app, the first thing to do is to set up the React Native Development Environment ([Link to Docs here](https://reactnative.dev/docs/environment-setup)). I used Homebrew, as suggested by the docs, for many of the installs.
 
-## Setup Summary
+### Setup Summary
  - Node
  - Watchman
  - IOS Specific:
@@ -21,7 +52,7 @@ To begin working with the mobile app, the first thing to do is to set up the Rea
     - JDK (Zulu11)
     - Android Studio (Provides Android emulator)
 
-## Running
+### Running
 
 After completing the Development Environment Setup, you should have this repo cloned. The following instructions are also available on the previously linked Docs.
 
@@ -42,7 +73,7 @@ The app should build onto the emulator and run when ready. The first build might
 
 Refer [here](https://reactnative.dev/docs/running-on-device) if you want to run on a physical device.
 
-## Running Summary
+### Running Summary
  - Terminals in `TempTurner` directory
  - Terminal #1: `npx react-native start`
  - Terminal #2:
@@ -53,27 +84,10 @@ Refer [here](https://reactnative.dev/docs/running-on-device) if you want to run 
 
 After the first run, you will not need to call `npx pod-install` anymore until you install a new npm package.
 
-## Development
+### Development
 
 The basic development process is to get the app running, then edit the files in `TempTurner/src`. Whenever you save these files, you should see the emulator update correspondingly. 
 
 If you need new packages, call `npm i <package name>` then follow it with `npx pod-install`. 
 
 If you want to debug code, I've only been able to make it work with the Android Emulator, but just "shake" the device (or call `adb shell input keyevent 82`). Click on debug in the menu that pops up, and you should see something come up in Safari/Google Chrome.
-
-## Current Progress (Mobile App)
-
-For a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These, of course, correspond to the three main blocks you see on the app screen when it loads. Using `ScheduleContext.js` makes it possible to coordinate the Target Block with the Schedule Block.
-
-As for the other files, `App.js` is a high-level wrapper for the three blocks, and `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
-
-Main implementation goals:
- - Send and Receive data over WiFi with the ESP32
- - Update the app screen based on WiFi data
- - Finish up coordinating the Target Block with the Schedule Block
-
-Feature goals:
- - Implement `Styles.js`
- - Work on aesthetics (app icon, splash screen, home screen)
- - Storage of "recipes" / saved schedules
- - Optimize Schedule Block + Target Block interactions
