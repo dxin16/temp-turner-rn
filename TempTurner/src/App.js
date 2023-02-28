@@ -12,6 +12,7 @@ import TargetBlock from './TargetBlock';
 import ScheduleBlock from './ScheduleBlock';
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
+import { WebView } from 'react-native-webview';
 
 
 // Main screen
@@ -36,9 +37,7 @@ function HomeScreen({ navigation }) {
 function CameraScreen() {
   return (
     <NativeBaseProvider>
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Camera Screen</Text>
-      </View>
+      <WebView source={{ uri: "https://google.com" }} />
     </NativeBaseProvider>
   );
 }

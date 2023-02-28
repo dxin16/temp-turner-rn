@@ -21,7 +21,7 @@ function ScheduleBlock() {
   // Modal useStates
   const [showTimeModal, setShowTimeModal] = useState(false)
   const [callingRow, setCallingRow] = useState(0)
-  const [rowTime, setRowTime] = useState([0, 0, 0])
+  const [rowTime, setRowTime] = useState([-1, -1, -1])
 
   // Track number of rows
   const [numRows, setNumRows] = useState(2)
@@ -149,9 +149,9 @@ function ScheduleBlock() {
   // Takes the times array and returns array containing string to display and int value for the Target Block
   // Basically the TimeDisplay in the Target Block
   function ParseTime(times) {
-    var hrs = times[0]
-    var mins = times[1]
-    var secs = times[2]
+    var hrs = times[0] > -1 ? times[0] : 0
+    var mins = times[1] > -1 ? times[1] : 0
+    var secs = times[2] > -1 ? times[2] : 0
 
     var hrsDisp = 
       (hrs == 0) ? "00" : 
@@ -230,14 +230,21 @@ function ScheduleBlock() {
             <HStack space={1}>
               <FormControl w="30%">
                 <FormControl.Label>Hours</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" 
+                <Input p="1" fontSize={18} textAlign="center" placeholder=''
                   value={
+                    rowTime[0] == -1 ? "" :
                     rowTime[0] == 0 ? "00" : 
                     rowTime[0] < 10 ? "0" + rowTime[0].toString() : rowTime[0].toString()
                   }
                   onChangeText={(text) => {
-                    const newRowTime = [parseInt(text), rowTime[1], rowTime[2]]
-                    setRowTime(newRowTime)
+                    if (parseInt(text) >= 0 && parseInt(text) <= 24) {
+                      const newRowTime = [parseInt(text), rowTime[1], rowTime[2]]
+                      setRowTime(newRowTime)
+                    }
+                    else {
+                      const newRowTime = [rowTime[0], rowTime[1], rowTime[2]]
+                      setRowTime(newRowTime)
+                    }
                   }}
                 />
               </FormControl>
@@ -251,12 +258,19 @@ function ScheduleBlock() {
                 <FormControl.Label>Minutes</FormControl.Label>
                 <Input p="1" fontSize={18} textAlign="center" 
                   value={
+                    rowTime[1] == -1 ? "" :
                     rowTime[1] == 0 ? "00" : 
                     rowTime[1] < 10 ? "0" + rowTime[1].toString() : rowTime[1].toString()
                   }
                   onChangeText={(text) => {
-                    const newRowTime = [rowTime[0], parseInt(text), rowTime[2]]
-                    setRowTime(newRowTime)
+                    if (parseInt(text) >= 0 && parseInt(text) <= 59) {
+                      const newRowTime = [rowTime[0], parseInt(text), rowTime[2]]
+                      setRowTime(newRowTime)
+                    }
+                    else {
+                      const newRowTime = [rowTime[0], rowTime[1], rowTime[2]]
+                      setRowTime(newRowTime)
+                    }
                   }}
                 />
               </FormControl>
@@ -268,14 +282,21 @@ function ScheduleBlock() {
 
               <FormControl w="30%">
                 <FormControl.Label>Seconds</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" 
+                <Input p="1" fontSize={18} textAlign="center"
                   value={
+                    rowTime[2] == -1 ? "" :
                     rowTime[2] == 0 ? "00" : 
                     rowTime[2] < 10 ? "0" + rowTime[2].toString() : rowTime[2].toString()
                   }
                   onChangeText={(text) => {
-                    const newRowTime = [rowTime[0], rowTime[1], parseInt(text)]
-                    setRowTime(newRowTime)
+                    if (parseInt(text) >= 0 && parseInt(text) <= 59) {
+                      const newRowTime = [rowTime[0], rowTime[1], parseInt(text)]
+                      setRowTime(newRowTime)
+                    }
+                    else {
+                      const newRowTime = [rowTime[0], rowTime[1], rowTime[2]]
+                      setRowTime(newRowTime)
+                    }
                   }}
                 />
               </FormControl>
@@ -307,7 +328,7 @@ function ScheduleBlock() {
                   return(r)
                 })
                 appStates.setScheduleRows(newRows)
-                setRowTime([0, 0, 0])
+                setRowTime([-1, -1, -1])
               }}>
                 Save
               </Button>

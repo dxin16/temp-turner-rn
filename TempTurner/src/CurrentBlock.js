@@ -13,9 +13,7 @@ import { styles, dims } from './Styles';
 function CurrentBlock({ navi }) {
   // State variables to contain wifi-related info
   // reqTries is a temporary way to control and test the sending of http requests
-  const [espData, setEspData] = useState()
   const [reqTries, setReqTries] = useState(0)
-
   const [currentTemp, setCurrentTemp] = useState("")
   const [smokeLevel, setSmokeLevel] = useState("")
 
@@ -24,9 +22,8 @@ function CurrentBlock({ navi }) {
     fetch('http://172.20.10.14')
       .then(response => response.text())
       .then(text => {
-        setEspData(text)       // Necessary values should be retrievable from text using regexes
-        setCurrentTemp(text.match(/Current Temperature: ([0-9.])*/g)[0].split(' ')[2])
-        setSmokeLevel(text.match(/Current Smoke Level: ([0-9.])*/g)[0].split(' ')[3])
+        setCurrentTemp(text.match(/Current Temperature: ([0-9.])*/g)[0].split(' ').pop())
+        setSmokeLevel(text.match(/Current Smoke Level: ([0-9.])*/g)[0].split(' ').pop())
     })
     .catch(error => {
       console.error(error)
