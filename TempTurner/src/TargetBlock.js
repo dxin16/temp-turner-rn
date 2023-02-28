@@ -17,27 +17,24 @@ function TargetBlock() {
   // Set the target and timer displays
   const [timerCount, setTimer] = useState(0)
   const [targetTemp, setTargetTemp] = useState("---")
+  const [targetInt, setTargetInt] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
 
   // Temporary testing variable to control http request
   const [reqTries, setReqTries] = useState(0)
 
   // Send data from ESP32 (http post -> ESP32 webpage @ its ip)
-  // useEffect(() => {
-  //   fetch('http://172.20.10.14/target', {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'text/html',
-  //       'Content-Type': 'text/html',
-  //     },
-  //     body: JSON.stringify({
-  //       targetTemperature: targetTemp,
-  //     }),
-  //   })
-  //   .catch(error => {
-  //     console.error(error)
-  //   })
-  // }, [reqTries])
+  useEffect(() => {
+    fetch('http://172.20.10.14/target', {
+      method: 'POST',
+      headers: {
+      },
+      body: `temp=${targetInt}`
+    })
+    .catch(error => {
+      console.error(error)
+    })
+  }, [reqTries])
 
   // Cause changes based on ScheduleContext
   useEffect(() => {
@@ -53,6 +50,7 @@ function TargetBlock() {
         currentRows[0].color = "active"
         appStates.setScheduleRows(currentRows)
         setTargetTemp(appStates.scheduleRowsObj[0].temp)
+        setTargetInt(parseInt(appStates.scheduleRowsObj[0].temp.split(' ')[0]))
         setTimer(appStates.scheduleRowsObj[0].intTime)
       }
       else {
@@ -65,22 +63,8 @@ function TargetBlock() {
     if (isRunning && timerCount === -1) {
       setTimer(0)
       appStates.setUpdateSchedule(true)
-
-      // // Shift should remove the first index of the scheduleRows array
-      // // TODO: This doesn't update for the scheduling block yet for some reason
-      // appStates.scheduleRowsObj.shift()
-      // appStates.setScheduleRows(appStates.scheduleRowsObj)
-
-      // if (appStates.scheduleRowsObj.length > 1) {
-      //   setTimer(appStates.scheduleRowsObj[0].intTime)
-      //   setTargetTemp(appStates.scheduleRowsObj[0].temp)
-      // }
-      // else {
-      //   setKeepRunning(false)
-      //   setTargetTemp("---")
-      // }
     }
-    
+
     // Setup the basic timer
     let interval = setInterval(() => {
       setTimer(lastTimerCount => {
