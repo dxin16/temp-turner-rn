@@ -10,7 +10,7 @@ import {
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
 
-function TargetBlock() {
+function TargetBlock({ navi }) {
   // Grab the ScheduleContext to access shared state variables
   const appStates = useContext(ScheduleContext)
 
@@ -103,7 +103,14 @@ function TargetBlock() {
     <VStack>
 
       {/* Section Title */}
-      <Text p="6px" h="30%" fontSize={24}>Current Setting</Text>
+      <HStack p="6px" h="30%" justifyContent="space-between">
+          <Text w="50%" fontSize={24}>Current Setting</Text>
+          <Button w="40%" h="70%" p="3px" variant="ghost" colorScheme="yellow" bg="yellow.200"
+            onPress={() => navi.navigate("Settings")}
+          >
+            <Text fontSize={16} color="yellow.600">Display Settings</Text>
+          </Button>
+        </HStack>
 
       {/* Button to send a post request */}
       {/* <Center>

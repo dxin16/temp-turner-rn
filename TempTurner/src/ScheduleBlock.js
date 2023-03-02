@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Platform, useWindowDimensions } from 'react-native';
+import { View, Platform, useWindowDimensions, Alert } from 'react-native';
 import { 
   VStack,
   Center,
@@ -14,9 +14,11 @@ import {
 } from "native-base";
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
+import { useIsFocused } from '@react-navigation/native';
 
 function ScheduleBlock() {
   const appStates = useContext(ScheduleContext)
+  const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
   
   // Modal useStates
   const [showTimeModal, setShowTimeModal] = useState(false)
@@ -48,22 +50,22 @@ function ScheduleBlock() {
       setNumRows(appStates.scheduleRowsObj.length)
       appStates.setUpdateTarget(true)
     }
-    // const newRows = appStates.scheduleRowsObj.map((r) => {
-    //   if (r.index === appStates.scheduleRowsObj.at(0).index) {
-    //     return({
-    //       num: r.num,
-    //       temp: r.temp,
-    //       time: r.time,
-    //       intTime: r.intTime,
-    //       color: "active",
-    //       index: r.index,
-    //     })
-    //   }
-    //   return(r)
-    // })
-    // appStates.setScheduleRows(newRows)
-
   }, [appStates.scheduleBool])
+
+  useEffect(() => {
+    const newRows = appStates.scheduleRowsObj
+    newRows.forEach(row => {
+      if (row.temp !== "---") {
+        const oldTemp = parseInt(row.temp.split(' ')[0])
+        const newTemp = appStates.useCelsiusBool ?
+          Math.round((oldTemp - 32) * 5/9) : Math.round((oldTemp * 9/5) + 32)
+        
+        const newTempString = newTemp.toString() + tempUnitSuffix
+        row.temp = newTempString
+      }
+    })
+    appStates.setScheduleRows(newRows)
+  }, [appStates.useCelsiusBool])
 
   // Function to create rows out of the scheduleRows
   // Allow for adjustment of temp or time on any row and updates scheduleRows accordingly
@@ -110,11 +112,23 @@ function ScheduleBlock() {
           <Input w="100%" p="1" fontSize={24} placeholderTextColor={textColor} placeholder={row.temp} textAlign="center" variant="unstyled"
             isDisabled={row.color === "disabled" ? true : false}
             onEndEditing={(e) => {
+              // Check if text was input and check that the input is in range
+              const inputVal = e.nativeEvent.text
+              const inputLimit = appStates.useCelsiusBool ? 260 : 500
+              const checkVal = !inputVal ? 0 :
+                parseInt(inputVal) < 0 || parseInt(inputVal) > inputLimit ? -1 : 1
+
+              if (checkVal === -1) {
+                appStates.useCelsiusBool ? 
+                Alert.alert("Out of Range", "Temperature should be\nbetween 0 and 260 (°C).")
+                : Alert.alert("Out of Range", "Temperature should be\nbetween 0 and 500 (°F).")
+              }
+
               const newRows = appStates.scheduleRowsObj.map((r) => {
                 if (r.index === row.index) {
                   return({
                     num: r.num,
-                    temp: e.nativeEvent.text ? e.nativeEvent.text + " °F" : "---",
+                    temp: checkVal === 1 ? inputVal + tempUnitSuffix : r.temp,
                     time: r.time,
                     intTime: r.intTime,
                     color: r.color,
@@ -170,6 +184,7 @@ function ScheduleBlock() {
     return([timeString, timeInt])
   }
 
+  const isFocused = useIsFocused()
   return(
     <Center w="95%" h="42%" bg="light.300" rounded="md" shadow={3}>
       <VStack w="100%">
@@ -177,10 +192,10 @@ function ScheduleBlock() {
         {/* Section Title */}
         <HStack p="6px" h="15%" justifyContent="space-between">
           <Text w="50%" fontSize={24}>Scheduling</Text>
-          <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="blue" bg="darkBlue.100"
+          <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="green" bg="green.200"
             onPress={() => appStates.setUpdateTarget(true)}
           >
-            <Text fontSize={16} color="blue.600">Start Schedule</Text>
+            <Text fontSize={16} color="green.600">Start Schedule</Text>
           </Button>
         </HStack>
 
@@ -202,20 +217,15 @@ function ScheduleBlock() {
           <ScrollView py="5px">
             <VStack pl="4%" w="100%" space={1}>
               {appStates.scheduleRowsObj.map((row, idx)=> {
-                return(
-                  <InputtableRow row={row} key={idx} />
-                )
+                if (isFocused) {
+                  return(
+                    <InputtableRow row={row} key={idx} />
+                  )
+                }
               })}
             </VStack>
           </ScrollView>
         </Box>
-
-        {/* Start Button */}
-        {/* <Center pt="4px" h="15%">
-          <Button p="2px" px="10px" onPress={() => appStates.setUpdateTarget(true)}>
-            <Text fontSize={18} color="white">Start Schedule</Text>
-          </Button>
-        </Center> */}
 
       </VStack>
       
@@ -230,14 +240,14 @@ function ScheduleBlock() {
             <HStack space={1}>
               <FormControl w="30%">
                 <FormControl.Label>Hours</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" placeholder=''
+                <Input p="1" fontSize={18} textAlign="center" placeholder='00'
                   value={
                     rowTime[0] == -1 ? "" :
                     rowTime[0] == 0 ? "00" : 
                     rowTime[0] < 10 ? "0" + rowTime[0].toString() : rowTime[0].toString()
                   }
                   onChangeText={(text) => {
-                    if (parseInt(text) >= 0 && parseInt(text) <= 24) {
+                    if (parseInt(text) >= 0 && parseInt(text) <= 23) {
                       const newRowTime = [parseInt(text), rowTime[1], rowTime[2]]
                       setRowTime(newRowTime)
                     }
@@ -256,7 +266,7 @@ function ScheduleBlock() {
               
               <FormControl w="30%">
                 <FormControl.Label>Minutes</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" 
+                <Input p="1" fontSize={18} textAlign="center" placeholder='00'
                   value={
                     rowTime[1] == -1 ? "" :
                     rowTime[1] == 0 ? "00" : 
@@ -282,7 +292,7 @@ function ScheduleBlock() {
 
               <FormControl w="30%">
                 <FormControl.Label>Seconds</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center"
+                <Input p="1" fontSize={18} textAlign="center" placeholder='00'
                   value={
                     rowTime[2] == -1 ? "" :
                     rowTime[2] == 0 ? "00" : 
@@ -306,6 +316,7 @@ function ScheduleBlock() {
           <Modal.Footer>
             <Button.Group space={2}>
               <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                setRowTime([-1, -1, -1])
                 setShowTimeModal(false)
               }}>
                 Cancel

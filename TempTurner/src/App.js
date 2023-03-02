@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Platform, useWindowDimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -6,6 +6,8 @@ import {
   NativeBaseProvider,
   VStack,
   Text,
+  HStack,
+  Switch,
 } from "native-base";
 import CurrentBlock from './CurrentBlock';
 import TargetBlock from './TargetBlock';
@@ -25,7 +27,7 @@ function HomeScreen({ navigation }) {
 
         {/* Main three blocks; defined in their own .js files */}
         <CurrentBlock navi={navigation}/>
-        <TargetBlock />
+        <TargetBlock navi={navigation}/>
         <ScheduleBlock />
 
       </VStack>
@@ -40,6 +42,23 @@ function CameraScreen() {
       <WebView source={{ uri: "https://google.com" }} />
     </NativeBaseProvider>
   );
+}
+
+function SettingsScreen() {
+  const appStates = useContext(ScheduleContext)
+
+  return (
+    <NativeBaseProvider>
+      <HStack p="5" w="100%" h="10%">
+        <Text fontSize={20} w="70%">Temperature Units</Text>
+        <Text fontSize={20}>°F</Text>
+        <Switch size="sm" offTrackColor="blue.200" onTrackColor="blue.200" isChecked={appStates.useCelsiusBool}
+          onToggle={() => appStates.setUseCelsius(!appStates.useCelsiusBool)}
+        />
+        <Text fontSize={20}>°C</Text>
+      </HStack>
+    </NativeBaseProvider>
+  )
 }
 
 // Main App structure that is returned
@@ -67,6 +86,7 @@ function App() {
   ])
   const [updateTarget, setUpdateTarget] = useState(false)
   const [updateSchedule, setUpdateSchedule] = useState(false)
+  const [useCelsius, setUseCelsius] = useState(false)
 
   
   // Define the ScheduleContext values
@@ -74,9 +94,11 @@ function App() {
     scheduleRowsObj: scheduleRows,
     targetBool: updateTarget,
     scheduleBool: updateSchedule,
+    useCelsiusBool: useCelsius,
     setScheduleRows,
     setUpdateTarget,
     setUpdateSchedule,
+    setUseCelsius,
   }
 
   // Return/render the main app
@@ -86,6 +108,7 @@ function App() {
         <Stack.Navigator>
           <Stack.Screen name="The Temp Turner" component={HomeScreen} />
           <Stack.Screen name="Camera View" component={CameraScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ScheduleContext.Provider>
