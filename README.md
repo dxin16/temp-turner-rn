@@ -8,21 +8,20 @@ This is the repo for our project's code. Most of the files contained are standar
 
 ## Current Progress (Mobile App)
 
-As a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These correspond to the three main blocks you see on the app screen when it loads. Using `ScheduleContext.js` makes it possible to coordinate the Target Block with the Schedule Block.
+As a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These correspond to the three main blocks you see on the app screen when it loads. Using `ScheduleContext.js` makes it possible to coordinate the app's Blocks and Screens with each other.
 
-For the other files, `App.js` is a high-level wrapper for the three blocks, and `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
+For the other files, `App.js` is a high-level wrapper for the three blocks; it also sets up the ScheduleContext and contains the other screens for the app (Camera and Settings). `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
 
 Main remaining goals:
  - Finish up http request integration
-   - Display GET results in the Current Block
-   - Confirm POST target temperature works
    - Manage request failures
- - Clean up input areas
- - Add Schedule Block input validation
  - Add in more graphics
    - Visual Indicators for temperature, smoke, time
    - App Icon and Splash Screen
    - Overall app appearance and style
+ - Small fixes to input areas
+ - Addition of off state
+ - Indication when target temp isn't reached
 
 Additional goals:
  - Implement `Styles.js` to accomodate many phone sizes
@@ -50,7 +49,7 @@ To begin working with the mobile app, the first thing to do is to set up the Rea
     - CocoaPods
  - Android Specific:
     - JDK (Zulu11)
-    - Android Studio (Provides Android emulator)
+    - Android Studio (Provides Android emulator - needs setup)
 
 ### Running
 
@@ -65,7 +64,9 @@ On the second terminal, you can perform everything else needed to run the code. 
     - This is the package for navigating between screens.
  - Follow the instructions [here](https://docs.nativebase.io/install-rn) in the "Existing Project" tab.
     - This is the package used for basically all of the UI.
- - If I forgot to list any of them here, the name of a missing package should be specified in an error if there are any.
+ - `npm install --save react-native-webview`
+    - This is to access the camera, which will stream to an IP address on the local network.
+ - The first two are links because they have multiple dependencies that need to be installed.
 
 After installing the necessary packages, call `npx pod-install` to install pods for IOS. Then call `npx react-native run-ios` and/or `npx react-native run-android` depending on which emulators you have available.
 
@@ -88,6 +89,6 @@ After the first run, you will not need to call `npx pod-install` anymore until y
 
 The basic development process is to get the app running, then edit the files in `TempTurner/src`. Whenever you save these files, you should see the emulator update correspondingly. 
 
-If you need new packages, call `npm i <package name>` then follow it with `npx pod-install`. 
+If you need new packages, generally you can call `npm i <package name>` (follow what the repo setup guide says) then follow it with `npx pod-install`. 
 
 If you want to debug code, I've only been able to make it work with the Android Emulator, but just "shake" the device (or call `adb shell input keyevent 82`). Click on debug in the menu that pops up, and you should see something come up in Safari/Google Chrome.
