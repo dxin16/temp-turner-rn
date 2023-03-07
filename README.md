@@ -4,7 +4,7 @@
 
 Purdue Spring 2023 - ECE 49022 Section 2 - Team 22: The Temp Turner
 
-This is the repo for our project's code. Most of the files contained are standard files that React Native requires to run. The main Temp Turner code implementation can be found in `TempTurner/src`. Code involving the ESP32 and the motor can be found in `Arduino_ESP32`.
+This is the repo for our project's code. Most of the files contained are standard files that React Native requires to run. The main Temp Turner mobile app code implementation can be found in `TempTurner/src`. Code involving the ESP32 and the motor can be found in `Arduino_ESP32`.
 
 ## Current Progress (Mobile App)
 
@@ -15,12 +15,15 @@ For the other files, `App.js` is a high-level wrapper for the three blocks; it a
 Main remaining goals:
  - Finish up http request integration
    - Manage request failures
+   - Smoke Level display and simple alert system
  - Add in more graphics
    - Visual Indicators for temperature, smoke, time
    - App Icon and Splash Screen
    - Overall app appearance and style
- - Small fixes to input areas
- - Addition of off state
+ - Make Modal that is activated when tapping the number of an initialized row
+   - Option to move row before/after some other row
+   - Option to set row as "off"
+   - Option to delete row
  - Indication when target temp isn't reached
 
 Additional goals:
@@ -91,4 +94,4 @@ The basic development process is to get the app running, then edit the files in 
 
 If you need new packages, generally you can call `npm i <package name>` (follow what the repo setup guide says) then follow it with `npx pod-install`. 
 
-If you want to debug code, I've only been able to make it work with the Android Emulator, but just "shake" the device (or call `adb shell input keyevent 82`). Click on debug in the menu that pops up, and you should see something come up in Safari/Google Chrome.
+If you want to debug code, I've only been able to make it work with the Android Emulator, but just "shake" the device (or call `adb shell input keyevent 82`). Click on debug in the menu that pops up, and you should see localhost come up in Safari/Google Chrome. Under `debuggerWorker.aca173c4` or something like that, you can click into `index.bundle` and go down into the `src` folder. From there, you can set breakpoints at lines in the files. If you can't get to the `src` folder, try closing out of localhost and restarting the app.

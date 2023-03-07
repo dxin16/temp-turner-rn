@@ -30,6 +30,7 @@ function CurrentBlock({ navi }) {
     })
   }, [reqTries])
   
+  // Parse values that are received via GET
   function SetCurrentValues(text) {
     const tempFromText = text.match(/Current Temperature: ([0-9.])*/g)[0].split(' ').pop()
     const smokeFromText = text.match(/Current Smoke Level: ([0-9.])*/g)[0].split(' ').pop()
@@ -43,7 +44,7 @@ function CurrentBlock({ navi }) {
     <Center w="95%" h="25%" bg="light.300" rounded="md" shadow={3}>
       <VStack>
 
-        {/* Section Title */}
+        {/* Section Title & Camera Button */}
         <HStack p="6px" h="30%" justifyContent="space-between">
           <Text w="50%" fontSize={24}>Current Status</Text>
           <Button w="40%" h="70%" p="3px" variant="ghost" colorScheme="blue" bg="darkBlue.100"
@@ -54,7 +55,7 @@ function CurrentBlock({ navi }) {
         </HStack>
         
 
-        {/* Button to send a get request */}
+        {/* Button to send a GET request */}
         {/* <Center>
           <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Request</Button>
         </Center> */}
@@ -72,7 +73,6 @@ function CurrentBlock({ navi }) {
         </HStack>
 
         {/* Actual Values */}
-        {/* the hardcoded values will be replaced with results from the request */}
         <HStack w="100%" h="35%">
         <Center w="50%">
             <Text pb="25px" fontSize={28} color="orange.500">{currentTemp}</Text>

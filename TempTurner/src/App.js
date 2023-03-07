@@ -26,6 +26,7 @@ function HomeScreen({ navigation }) {
       <VStack pt="3" h="100%" space={4} alignItems="center">
 
         {/* Main three blocks; defined in their own .js files */}
+        {/* Pass navigation variable so that they can move to other screens */}
         <CurrentBlock navi={navigation}/>
         <TargetBlock navi={navigation}/>
         <ScheduleBlock />
@@ -35,7 +36,8 @@ function HomeScreen({ navigation }) {
   );
 }
 
-// Example second screen for navigation
+// Placeholder screen to contain camera view
+// Put the address where the camera is being streamed in uri
 function CameraScreen() {
   return (
     <NativeBaseProvider>
@@ -44,6 +46,8 @@ function CameraScreen() {
   );
 }
 
+// Screen to hold some display settings
+// Currently only has the Fahrenheit/Celsius toggle
 function SettingsScreen() {
   const appStates = useContext(ScheduleContext)
 
@@ -68,20 +72,20 @@ function App() {
   // Create necessary states for the ScheduleContext
   const [scheduleRows, setScheduleRows] = useState([
     {
-      num: "1",
-      temp: "---",
+      num: 1,
+      temp: "--- °F",
       time: "--:--:--",
       intTime: 0,
       color: "waiting",
-      index: 0
+      index: 1
     },
     {
       num: "+",
-      temp: "---",
+      temp: "--- °F",
       time: "--:--:--",
       intTime: 0,
       color: "disabled",
-      index: 1
+      index: 2
     },
   ])
   const [updateTarget, setUpdateTarget] = useState(false)

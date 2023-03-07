@@ -13,6 +13,7 @@ import ScheduleContext from './ScheduleContext';
 function TargetBlock({ navi }) {
   // Grab the ScheduleContext to access shared state variables
   const appStates = useContext(ScheduleContext)
+  const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
 
   // Set the target and timer displays
   const [timerCount, setTimer] = useState(0)
@@ -23,7 +24,7 @@ function TargetBlock({ navi }) {
   // Temporary testing variable to control http request
   const [reqTries, setReqTries] = useState(0)
 
-  // Send data from ESP32 (http post -> ESP32 webpage @ its ip)
+  // Send data to ESP32 (http POST -> ESP32 web server @ its ip)
   useEffect(() => {
     fetch('http://172.20.10.14/target', {
       method: 'POST',
@@ -49,6 +50,7 @@ function TargetBlock({ navi }) {
         currentRows = appStates.scheduleRowsObj
         currentRows[0].color = "active"
         appStates.setScheduleRows(currentRows)
+
         setTargetTemp(appStates.scheduleRowsObj[0].temp)
         setTargetInt(parseInt(appStates.scheduleRowsObj[0].temp.split(' ')[0]))
         setTimer(appStates.scheduleRowsObj[0].intTime)
@@ -102,7 +104,7 @@ function TargetBlock({ navi }) {
     <Center w="95%" h="25%" bg="light.300" rounded="md" shadow={3}>
     <VStack>
 
-      {/* Section Title */}
+      {/* Section Title & Settings Button */}
       <HStack p="6px" h="30%" justifyContent="space-between">
           <Text w="50%" fontSize={24}>Current Setting</Text>
           <Button w="40%" h="70%" p="3px" variant="ghost" colorScheme="yellow" bg="yellow.200"
@@ -112,7 +114,7 @@ function TargetBlock({ navi }) {
           </Button>
         </HStack>
 
-      {/* Button to send a post request */}
+      {/* Button to send a POST request */}
       {/* <Center>
         <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Send</Button>
       </Center> */}
