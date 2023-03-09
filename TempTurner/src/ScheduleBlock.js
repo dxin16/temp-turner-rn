@@ -11,6 +11,8 @@ import {
   Input,
   Modal,
   FormControl,
+  Pressable,
+  Popover,
 } from "native-base";
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
@@ -89,29 +91,82 @@ function ScheduleBlock() {
     return(
       <HStack w="100%" space={2}>
 
-        {/* This first button creates a new row */}
-        {/* For now, every row has it, but ultimately only the "plus" row should have it */}
-        {/* The other rows will have a menu when you click on their number that allows for managing them */}
+        {/* If this button displays "+" on it, it creates a new row */}
+        {/* Otherwise, a popover with options to edit the row appears */}
         <Center w="12%" bg={bgColor} borderWidth={1} outlineColor="black">
-          <Button p="1" w="100%" variant="ghost" colorScheme="gray"
-            onPress={
-              () => {
-                appStates.scheduleRowsObj.pop()
-                appStates.scheduleRowsObj.push({
-                  num: numRows,
-                  temp: "---" + tempUnitSuffix,
-                  time: "--:--:--",
-                  intTime: 0,
-                  color: "waiting",
-                  index: numRows,
-                })
-                setNumRows(numRows + 1)
-                appStates.scheduleRowsObj.push(disabledRow)
-              }    
-            }
-          >
-            <Text fontSize={24}>{row.num}</Text>
-          </Button>
+          {
+            row.num === "+" ? 
+              <Button p="1" w="100%" variant="ghost" colorScheme="gray"
+                onPress={
+                  () => {
+                    appStates.scheduleRowsObj.pop()
+                    appStates.scheduleRowsObj.push({
+                      num: numRows,
+                      temp: "---" + tempUnitSuffix,
+                      time: "--:--:--",
+                      intTime: 0,
+                      color: "waiting",
+                      index: numRows,
+                    })
+                    setNumRows(numRows + 1)
+                    appStates.scheduleRowsObj.push(disabledRow)
+                  }    
+                }
+              >
+                <Text fontSize={24}>{row.num}</Text>
+              </Button>
+            :
+              <Popover placement="top left" trigger={triggerProps => {
+                return (
+                  <Pressable w="100%" borderBottomColor="gray.500" borderBottomWidth="1" {...triggerProps}>
+                    {({ isPressed }) => {
+                      return (
+                        <Center w="100%" p="1" px="3" bg={row.color === "active" ? bgColor: isPressed ? "#93908A" : "light.400"}>
+                          <Text fontSize={24}>{row.num}</Text>
+                        </Center>
+                    )}}
+                  </Pressable>
+                )}}>
+                <Popover.Content accessibilityLabel="Edit Row" w="56">
+                  <Popover.Arrow bg="gray.100" />
+                  <Popover.CloseButton />
+                  <Popover.Header>Edit Row</Popover.Header>
+                  <Popover.Body p="0" pb="1" bg="gray.100">
+                    <VStack>
+                      <Pressable bg="gray.200" w="100%" 
+                        borderBottomColor="gray.500" borderBottomWidth="1">
+                          {({ isPressed }) => {
+                            return (
+                              <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
+                                <Text pl="2">Move Row...</Text>
+                              </Box>
+                            )
+                          }}
+                      </Pressable>
+                      <Pressable bg="gray.200" w="100%">
+                          {({ isPressed }) => {
+                            return (
+                              <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
+                                <Text pl="2">Delete Row</Text>
+                              </Box>
+                            )
+                          }}
+                      </Pressable>
+                      <Pressable bg="gray.200" w="100%" 
+                        borderTopColor="gray.500" borderTopWidth="1">
+                          {({ isPressed }) => {
+                            return (
+                              <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
+                                <Text pl="2">Set Temperature as "OFF"</Text>
+                              </Box>
+                            )
+                          }}
+                      </Pressable>
+                    </VStack>
+                  </Popover.Body>
+                </Popover.Content>
+              </Popover>
+          }
         </Center>
 
         {/* This is the input temperature area for each row */}
