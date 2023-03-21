@@ -20,15 +20,12 @@ Main remaining goals:
    - Visual Indicators for temperature, smoke, time
    - App Icon and Splash Screen
    - Overall app appearance and style
- - Make Modal that is activated when tapping the number of an initialized row
-   - Option to move row before/after some other row
-   - Option to set row as "off"
-   - Option to delete row
  - Indication when target temp isn't reached
 
 Additional goals:
  - Implement `Styles.js` to accomodate many phone sizes
  - Storage of "recipes" / saved schedules
+ - Consider making it possible to specify where to move a row (currently only to the top)
 
 ## Current Progress (ESP32 and Motor)
 As a brief summary of files in `Arduino_ESP32`, `MainPart.ino` contains the implementation for the ESP32 to connect to WiFi, then host and maintain a web server. Motor control is implemented in `Motor.ino` and in the folder `Arduino_ESP32/fbss_mt_demo`.

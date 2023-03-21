@@ -31,6 +31,12 @@ function ScheduleBlock() {
   // Track number of rows
   const [numRows, setNumRows] = useState(2)
 
+  // Manage row edit option
+  const [rowEditInfo, setRowEditInfo] = useState({
+    rowNum: -1,
+    option: "none",
+  })
+
   // Hold the row that cannot hold input (plus button only)
   const disabledRow =
   {
@@ -77,10 +83,73 @@ function ScheduleBlock() {
     appStates.setScheduleRows(newRows)
   }, [appStates.useCelsiusBool])
 
+  // Update rows on Popover selection
+  useEffect(() => {
+    if (rowEditInfo.option === "move") {
+      // Use JSON conversion to deep copy the schedule rows
+      const currentRows = JSON.parse(JSON.stringify(appStates.scheduleRowsObj))
+      const newRows = appStates.scheduleRowsObj
+      const rowToMove = {...currentRows[rowEditInfo.rowNum - 1]}
+
+      newRows.forEach((row, ind) => {
+        if (ind < rowEditInfo.rowNum) {
+          if (ind === 0) {
+            row.num = ind + 1
+            row.temp = rowToMove.temp
+            row.time = rowToMove.time
+            row.intTime = rowToMove.intTime
+            row.color = rowToMove.color
+            row.index = ind + 1
+          } 
+          else {
+            row.num = ind + 1
+            row.temp = currentRows[ind - 1].temp
+            row.time = currentRows[ind - 1].time
+            row.intTime = currentRows[ind - 1].intTime
+            row.color = currentRows[ind - 1].color
+            row.index = ind + 1
+          }
+        }
+      })
+      setRowEditInfo({rowNum: -1, option: "none"})
+    }
+    if (rowEditInfo.option === "delete") {
+      const currentRows = appStates.scheduleRowsObj
+
+      // Remove element by splicing
+      currentRows.splice(rowEditInfo.rowNum - 1, 1)
+      
+      // Fix num and index values of each row
+      currentRows.forEach((row, ind) => {
+        row.num = row.num === "+" ? row.num : ind + 1
+        row.index = ind + 1
+        setNumRows(ind + 1)
+      })
+      setRowEditInfo({rowNum: -1, option: "none"})
+    }
+    if (rowEditInfo.option === "off") {
+      const newRows = appStates.scheduleRowsObj.map((r) => {
+        if (r.index === rowEditInfo.rowNum) {
+          return({
+            num: r.num,
+            temp: "OFF",
+            time: r.time,
+            intTime: r.intTime,
+            color: r.color,
+            index: r.index,
+          })
+        }
+        return(r)
+      })
+      appStates.setScheduleRows(newRows)
+      setRowEditInfo({rowNum: -1, option: "none"})
+    }
+  }, [rowEditInfo])
+
   // Function to create rows out of the scheduleRows
   // Allow for adjustment of temp or time on any row and updates scheduleRows accordingly
   function InputtableRow({ row, key }) {
-    // Use the color info of the row to determine its appearance
+    // Use the color info of the row to determine its appearances
     var bgColor =
       row.color === "active" ? "green.500" :
       row.color === "waiting" ? "light.400" : "light.300"
@@ -116,7 +185,7 @@ function ScheduleBlock() {
                 <Text fontSize={24}>{row.num}</Text>
               </Button>
             :
-              <Popover placement="top left" trigger={triggerProps => {
+              <Popover defaultIsOpen={false} placement="top left" trigger={triggerProps => {
                 return (
                   <Pressable w="100%" borderBottomColor="gray.500" borderBottomWidth="1" {...triggerProps}>
                     {({ isPressed }) => {
@@ -133,17 +202,28 @@ function ScheduleBlock() {
                   <Popover.Header>Edit Row</Popover.Header>
                   <Popover.Body p="0" pb="1" bg="gray.100">
                     <VStack>
-                      <Pressable bg="gray.200" w="100%" 
-                        borderBottomColor="gray.500" borderBottomWidth="1">
+                      <Pressable bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
+                        onPress={() => {
+                          setRowEditInfo({
+                            rowNum: row.num,
+                            option: "move",
+                          })
+                        }}>
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text pl="2">Move Row...</Text>
+                                <Text pl="2">Move Row to Top</Text>
                               </Box>
                             )
                           }}
                       </Pressable>
-                      <Pressable bg="gray.200" w="100%">
+                      <Pressable bg="gray.200" w="100%"
+                        onPress={() => {
+                          setRowEditInfo({
+                            rowNum: row.num,
+                            option: "delete",
+                          })
+                        }}>
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
@@ -152,8 +232,13 @@ function ScheduleBlock() {
                             )
                           }}
                       </Pressable>
-                      <Pressable bg="gray.200" w="100%" 
-                        borderTopColor="gray.500" borderTopWidth="1">
+                      <Pressable bg="gray.200" w="100%" borderTopColor="gray.500" borderTopWidth="1"
+                        onPress={() => {
+                          setRowEditInfo({
+                            rowNum: row.num,
+                            option: "off",
+                          })
+                        }}>
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
@@ -261,7 +346,8 @@ function ScheduleBlock() {
         <HStack p="6px" h="15%" justifyContent="space-between">
           <Text w="50%" fontSize={24}>Scheduling</Text>
           <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="green" bg="green.200"
-            onPress={() => appStates.setUpdateTarget(true)}
+            //onPress={() => appStates.setUpdateTarget(true)}
+            onPress={() => setRowEditInfo({rowNum: 2, option: "move"})}
           >
             <Text fontSize={16} color="green.600">Start Schedule</Text>
           </Button>
