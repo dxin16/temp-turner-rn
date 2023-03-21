@@ -346,8 +346,7 @@ function ScheduleBlock() {
         <HStack p="6px" h="15%" justifyContent="space-between">
           <Text w="50%" fontSize={24}>Scheduling</Text>
           <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="green" bg="green.200"
-            //onPress={() => appStates.setUpdateTarget(true)}
-            onPress={() => setRowEditInfo({rowNum: 2, option: "move"})}
+            onPress={() => appStates.setUpdateTarget(true)}
           >
             <Text fontSize={16} color="green.600">Start Schedule</Text>
           </Button>
