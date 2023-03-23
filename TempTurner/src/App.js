@@ -8,13 +8,17 @@ import {
   Text,
   HStack,
   Switch,
+  Center,
+  Box,
 } from "native-base";
+import Icon from 'react-native-vector-icons/AntDesign';
 import CurrentBlock from './CurrentBlock';
 import TargetBlock from './TargetBlock';
 import ScheduleBlock from './ScheduleBlock';
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
 import { WebView } from 'react-native-webview';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 // Main screen
@@ -61,6 +65,53 @@ function SettingsScreen() {
         />
         <Text fontSize={20}>°C</Text>
       </HStack>
+      
+      {/* Mockups for visual indicators */}
+      <Center w="100%" h="50%" pt="2" bg="light.300">
+        <HStack h="100%">
+
+          <Center w="33%">
+            
+            {/* <Box w="9%" h="4%" bg="white" borderTopRadius={5} borderWidth={1} borderBottomWidth={0}><Text ml="-1px" fontSize={16}>-</Text></Box>
+            <Box w="9%" h="4%" bg="#F36B45" borderLeftWidth={1} borderRightWidth={1}><Text ml="-1px" fontSize={16}>-</Text></Box>
+            <Box w="9%" h="4%" bg="#F57F46" borderLeftWidth={1} borderRightWidth={1}><Text ml="-1px" fontSize={16}>-</Text></Box>
+            <Box w="9%" h="4%" bg="#F8A647" borderLeftWidth={1} borderRightWidth={1}><Text ml="-1px" fontSize={16}>-</Text></Box>
+            <Box w="9%" h="4%" bg="#FCCD47" borderLeftWidth={1} borderRightWidth={1}></Box> */}
+            
+            <LinearGradient paddingBottom={10} paddingRight={3}
+              colors={['#F36B45', '#F8A647', '#FDE047']} 
+              borderWidth={1} borderRadius={10} >
+                <Text fontSize={12}>{`-\n-\n-\n-`}</Text>
+              </LinearGradient>
+            
+            <Center w="16.8%" h="5.6%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
+          </Center>
+          <Center w="33%">
+            <Icon marginBottom={-15} marginLeft={20} name="cloud" size={50} color="#78716c" />
+            <Icon marginBottom={-10} marginLeft={12} name="cloud" size={40} color="#a8a29e" />
+            <Icon name="cloud" size={30} color="#f5f5f4" />
+          </Center>
+          <Center w="33%">
+            
+            {/* <Box w="9%" h="8%" bg="white" borderTopRadius={2} borderWidth={1} borderBottomWidth={0}/>
+            <Box w="9%" h="1.2%" bg="#00D4FF" borderLeftWidth={1} borderRightWidth={1} />
+            <Box w="9%" h="2.4%" bg="#17C8FF" borderLeftWidth={1} borderRightWidth={1} />
+            <Box w="9%" h="3.6%" bg="#1AB5FF" borderLeftWidth={1} borderRightWidth={1} />
+            <Box w="9%" h="4.8%" bg="#1DA1FF" borderLeftWidth={1} borderRightWidth={1} />
+            <Box w="9%" h="6%" bg="#1A91FF" borderBottomRadius={2} borderWidth={1} borderTopWidth={0} /> */}
+
+            <Center>
+              <Box bg="white" py={`${10}px`} px="5px" />
+              <LinearGradient paddingVertical={40} paddingHorizontal={5}
+                colors={['#00D4FF', '#1AB5FF', '#1A91FF']} />
+            </Center>
+
+            
+
+          </Center>
+
+        </HStack>
+      </Center>
     </NativeBaseProvider>
   )
 }
