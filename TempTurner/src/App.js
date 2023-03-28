@@ -19,12 +19,16 @@ import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
 import { WebView } from 'react-native-webview';
 import LinearGradient from 'react-native-linear-gradient';
-
+import SplashScreen from 'react-native-splash-screen';
 
 // Main screen
 // Use Native Base for UI - sectioning off parts of app
 // Primary UI structure is VStacks and HStacks with various blocks contained in the stacks
 function HomeScreen({ navigation }) {
+  useEffect(() => {
+    SplashScreen.hide()
+  }, [])
+  
   return (
     <NativeBaseProvider>
       <VStack pt="3" h="100%" space={4} alignItems="center">
