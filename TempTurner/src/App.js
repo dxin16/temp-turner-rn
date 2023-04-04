@@ -10,7 +10,6 @@ import {
   Switch,
   Center,
   Box,
-  KeyboardAvoidingView,
 } from "native-base";
 import Icon from 'react-native-vector-icons/AntDesign';
 import CurrentBlock from './CurrentBlock';
@@ -77,17 +76,11 @@ function SettingsScreen() {
 
           <Center w="33%">
             
-            {/* <Box w="9%" h="4%" bg="white" borderTopRadius={5} borderWidth={1} borderBottomWidth={0}><Text ml="-1px" fontSize={16}>-</Text></Box>
-            <Box w="9%" h="4%" bg="#F36B45" borderLeftWidth={1} borderRightWidth={1}><Text ml="-1px" fontSize={16}>-</Text></Box>
-            <Box w="9%" h="4%" bg="#F57F46" borderLeftWidth={1} borderRightWidth={1}><Text ml="-1px" fontSize={16}>-</Text></Box>
-            <Box w="9%" h="4%" bg="#F8A647" borderLeftWidth={1} borderRightWidth={1}><Text ml="-1px" fontSize={16}>-</Text></Box>
-            <Box w="9%" h="4%" bg="#FCCD47" borderLeftWidth={1} borderRightWidth={1}></Box> */}
-            
             <LinearGradient paddingBottom={10} paddingRight={3}
               colors={['#F36B45', '#F8A647', '#FDE047']} 
-              borderWidth={1} borderRadius={10} >
+              borderWidth={1} borderRadius={10}>
                 <Text fontSize={12}>{`-\n-\n-\n-`}</Text>
-              </LinearGradient>
+            </LinearGradient>
             
             <Center w="16.8%" h="5.6%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
           </Center>
@@ -97,21 +90,12 @@ function SettingsScreen() {
             <Icon name="cloud" size={30} color="#f5f5f4" />
           </Center>
           <Center w="33%">
-            
-            {/* <Box w="9%" h="8%" bg="white" borderTopRadius={2} borderWidth={1} borderBottomWidth={0}/>
-            <Box w="9%" h="1.2%" bg="#00D4FF" borderLeftWidth={1} borderRightWidth={1} />
-            <Box w="9%" h="2.4%" bg="#17C8FF" borderLeftWidth={1} borderRightWidth={1} />
-            <Box w="9%" h="3.6%" bg="#1AB5FF" borderLeftWidth={1} borderRightWidth={1} />
-            <Box w="9%" h="4.8%" bg="#1DA1FF" borderLeftWidth={1} borderRightWidth={1} />
-            <Box w="9%" h="6%" bg="#1A91FF" borderBottomRadius={2} borderWidth={1} borderTopWidth={0} /> */}
 
             <Center>
               <Box bg="white" py={`${10}px`} px="5px" />
               <LinearGradient paddingVertical={40} paddingHorizontal={5}
                 colors={['#00D4FF', '#1AB5FF', '#1A91FF']} />
             </Center>
-
-            
 
           </Center>
 
@@ -147,6 +131,7 @@ function App() {
   const [updateTarget, setUpdateTarget] = useState(false)
   const [updateSchedule, setUpdateSchedule] = useState(false)
   const [useCelsius, setUseCelsius] = useState(false)
+  const [smokeWarn, setSmokeWarn] = useState(false)
 
   
   // Define the ScheduleContext values
@@ -155,10 +140,12 @@ function App() {
     targetBool: updateTarget,
     scheduleBool: updateSchedule,
     useCelsiusBool: useCelsius,
+    smokeWarnBool: smokeWarn,
     setScheduleRows,
     setUpdateTarget,
     setUpdateSchedule,
     setUseCelsius,
+    setSmokeWarn,
   }
 
   // Return/render the main app

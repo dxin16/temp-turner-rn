@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Platform, useWindowDimensions } from 'react-native';
+import { View, Platform, useWindowDimensions, Alert } from 'react-native';
 import { 
   VStack,
   Center,
@@ -23,9 +23,12 @@ function TargetBlock({ navi }) {
 
   // Temporary testing variable to control http request
   const [reqTries, setReqTries] = useState(0)
+  const [issueColor, setIssueColor] = useState("light.300")
 
   // Send data to ESP32 (http POST -> ESP32 web server @ its ip)
   useEffect(() => {
+    var hasErr = false
+
     fetch('http://172.20.10.14/target', {
       method: 'POST',
       headers: {
@@ -34,11 +37,26 @@ function TargetBlock({ navi }) {
     })
     .catch(error => {
       console.error(error)
+      setIssueColor("red.600")
+      hasErr = true
+    })
+    .finally(() => {
+      if (!hasErr) {setIssueColor("light.300")}
     })
   }, [reqTries])
 
   // Cause changes based on ScheduleContext
-  useEffect(() => {
+  useEffect(() => {    
+    if (appStates.smokeWarnBool === true) {
+      appStates.setSmokeWarn(false)
+      Alert.alert(
+        "High Smoke Level Detected", 
+        `Please quickly attend to your stove. Target Temperature will be set to OFF.
+        \nPress OK when you have lowered the smoke level. This alert will continue to display until "High" is not detected.`,
+        [{text: 'OK', onPress: () => appStates.setSmokeWarn(true)}]
+        )
+    }
+    
     // When the Start Schedule button is pressed, this will change to true
     if (appStates.targetBool) {
       appStates.setUpdateTarget(false)
@@ -51,8 +69,14 @@ function TargetBlock({ navi }) {
         currentRows[0].color = "active"
         appStates.setScheduleRows(currentRows)
 
-        setTargetTemp(appStates.scheduleRowsObj[0].temp)
-        setTargetInt(parseInt(appStates.scheduleRowsObj[0].temp.split(' ')[0]))
+        if (appStates.smokeWarnBool === true) {
+          setTargetTemp("OFF")
+          setTargetInt(0)
+        }
+        else {
+          setTargetTemp(appStates.scheduleRowsObj[0].temp)
+          setTargetInt(parseInt(appStates.scheduleRowsObj[0].temp.split(' ')[0]))
+        }
         setTimer(appStates.scheduleRowsObj[0].intTime)
       }
       else {
@@ -120,7 +144,7 @@ function TargetBlock({ navi }) {
       </Center> */}
 
       {/* Value Labels */}
-      <HStack w="100%" h="35%">
+      <HStack w="100%" h="33%">
         <Center w="50%">
           <Text fontSize={20}>Target</Text>
           <Text fontSize={20}>Temperature</Text>
@@ -132,7 +156,7 @@ function TargetBlock({ navi }) {
       </HStack>
 
       {/* Actual Values */}
-      <HStack w="100%" h="35%" pb="25px">
+      <HStack w="100%" h="33%" pb="25px">
         <Center w="50%">
           <Text fontSize={28} color="orange.500">{targetTemp}</Text>
         </Center>
@@ -140,6 +164,8 @@ function TargetBlock({ navi }) {
           <TimeDisplay />
         </Center>
       </HStack>
+
+      <Text h="10%" pt="0" ml="5px" mt="-10px" color={issueColor}>Target Temperature is not being sent!</Text>
 
     </VStack>
   </Center>

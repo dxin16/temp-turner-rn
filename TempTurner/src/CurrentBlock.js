@@ -19,14 +19,24 @@ function CurrentBlock({ navi }) {
   const [reqTries, setReqTries] = useState(0)
   const [currentTemp, setCurrentTemp] = useState("")
   const [smokeLevel, setSmokeLevel] = useState("")
+  const [issueColor, setIssueColor] = useState("light.300")
 
   // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
   useEffect(() => {
+    // Testing purposes
+    // appStates.setSmokeWarn(true)
+    var hasErr = false
+
     fetch('http://172.20.10.14')
       .then(response => response.text())
       .then(text => SetCurrentValues(text))
     .catch(error => {
       console.error(error)
+      setIssueColor("red.600")
+      hasErr = true
+    })
+    .finally(() => {
+      if (!hasErr) {setIssueColor("light.300")}
     })
   }, [reqTries])
   
@@ -36,7 +46,12 @@ function CurrentBlock({ navi }) {
     const smokeFromText = text.match(/Current Smoke Level: ([0-9.])*/g)[0].split(' ').pop()
     const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
     setCurrentTemp(tempFromText + tempUnitSuffix)
-    setSmokeLevel(smokeFromText)
+
+    const smokeValue = parseFloat(smokeFromText)
+    const smokeQuality = smokeValue < 1 ? "Low" : smokeValue < 3 ? "Medium" : "High"
+    if (smokeQuality === "High") { appStates.setSmokeWarn(true) }
+      else { appStates.setSmokeWarn(false) }
+    setSmokeLevel(smokeQuality)
   }
 
   // Render structures needed for the Current Block
@@ -61,7 +76,7 @@ function CurrentBlock({ navi }) {
         </Center> */}
 
         {/* Value Labels */}
-        <HStack w="100%" h="35%">
+        <HStack w="100%" h="33%">
           <Center w="50%">
             <Text fontSize={20}>Current</Text>
             <Text fontSize={20}>Temperature</Text>
@@ -73,14 +88,21 @@ function CurrentBlock({ navi }) {
         </HStack>
 
         {/* Actual Values */}
-        <HStack w="100%" h="35%">
+        <HStack w="100%" h="33%">
         <Center w="50%">
             <Text pb="25px" fontSize={28} color="orange.500">{currentTemp}</Text>
           </Center>
           <Center w="50%">
-            <Text pb="25px" fontSize={28} color="green.600">{smokeLevel}</Text>
+            <Text pb="25px" fontSize={28} 
+              color={
+                smokeLevel === "Low" ? "green.600" :
+                smokeLevel === "Medium" ? "yellow.600" : "red.600"
+              }
+            >{smokeLevel}</Text>
           </Center>
         </HStack>
+
+        <Text h="10%" pt="0" ml="5px" mt="-10px" color={issueColor}>Current Status is not being received!</Text>
 
       </VStack>
     </Center>
