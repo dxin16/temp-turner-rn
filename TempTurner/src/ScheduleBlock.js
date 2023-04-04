@@ -13,6 +13,7 @@ import {
   FormControl,
   Pressable,
   Popover,
+  KeyboardAvoidingView,
 } from "native-base";
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
@@ -25,8 +26,10 @@ function ScheduleBlock() {
   
   // Modal useStates
   const [showTimeModal, setShowTimeModal] = useState(false)
+  const [showTempModal, setShowTempModal] = useState(false)
   const [callingRow, setCallingRow] = useState(0)
   const [rowTime, setRowTime] = useState([-1, -1, -1])
+  const [rowTemp, setRowTemp] = useState("")
 
   // Track number of rows
   const [numRows, setNumRows] = useState(2)
@@ -256,42 +259,17 @@ function ScheduleBlock() {
 
         {/* This is the input temperature area for each row */}
         {/* It will update the scheduleRows array when the user inputs a value and hits enter/return */}
+
         <Center w="40%" bg={bgColor} borderWidth={1} borderColor={textColor}>
-          <Input w="100%" p="1" fontSize={24} placeholderTextColor={textColor} placeholder={row.temp} textAlign="center" variant="unstyled"
-            isDisabled={row.color === "disabled" ? true : false}
-            onEndEditing={(e) => {
-              // Check if text was input and check that the input is in range
-              // Adhi suggested that the max temp he recorded of our current stove is ~200°C
-              // 260°C / 500°F was a rather clean value near that threshold, so I'm using that for now
-              const inputVal = e.nativeEvent.text
-              const inputLimit = appStates.useCelsiusBool ? 260 : 500
-              const checkVal = !inputVal ? 0 :
-                parseInt(inputVal) >= 0 && parseInt(inputVal) <= inputLimit ? 1 : -1
-
-              // This will execute for values that are either out of range or not numbers.
-              if (checkVal === -1) {
-                appStates.useCelsiusBool ? 
-                Alert.alert("Out of Range", "Temperature should be a number\nbetween 0 and 260 (°C).")
-                : Alert.alert("Out of Range", "Temperature should be a number\nbetween 0 and 500 (°F).")
+          <Button p="1" variant="unstyled" 
+            onPress={() => {
+              if (row.num !== "+") {
+                setCallingRow(row.index)
+                setShowTempModal(true)
               }
-
-              const newRows = appStates.scheduleRowsObj.map((r) => {
-                if (r.index === row.index) {
-                  return({
-                    num: r.num,
-                    temp: checkVal === 1 ? inputVal + tempUnitSuffix 
-                      : checkVal === -1 ? "---" + tempUnitSuffix : r.temp,
-                    time: r.time,
-                    intTime: r.intTime,
-                    color: r.color,
-                    index: r.index,
-                  })
-                }
-                return(r)
-              })
-              appStates.setScheduleRows(newRows)
-            }}
-          />
+            }}>
+            <Text fontSize={24} color={textColor}>{row.temp}</Text>
+          </Button>
         </Center>
 
         {/* This is the input time area for each row */}
@@ -338,7 +316,7 @@ function ScheduleBlock() {
 
   // Forces the rows to rerender for Fahrenheit/Celsius toggle, there might be a better way to do this
   const isFocused = useIsFocused()
-  return(
+  return (
     <Center w="95%" h="42%" bg="light.300" rounded="md" shadow={3}>
       <VStack w="100%">
 
@@ -383,7 +361,7 @@ function ScheduleBlock() {
       </VStack>
       
       {/* Modal for inputting time */}
-      <Modal isOpen={showTimeModal} onClose={() => setShowTimeModal(false)}>
+      <Modal isOpen={showTimeModal} avoidKeyboard={true} onClose={() => setShowTimeModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.CloseButton />
           <Modal.Header>{`Set Time for Row ${callingRow}`}</Modal.Header>
@@ -415,6 +393,7 @@ function ScheduleBlock() {
                     }
                   }}
                 />
+                <FormControl.Label>[0 - 23]</FormControl.Label>
               </FormControl>
 
               <FormControl w="2%">
@@ -445,6 +424,7 @@ function ScheduleBlock() {
                     }
                   }}
                 />
+                <FormControl.Label>[0 - 59]</FormControl.Label>
               </FormControl>
 
               <FormControl w="2%">
@@ -475,6 +455,7 @@ function ScheduleBlock() {
                     }
                   }}
                 />
+                <FormControl.Label>[0 - 59]</FormControl.Label>
               </FormControl>
             </HStack>
           </Modal.Body>
@@ -513,6 +494,83 @@ function ScheduleBlock() {
                 })
                 appStates.setScheduleRows(newRows)
                 setRowTime([-1, -1, -1])
+              }}>
+                Save
+              </Button>
+            </Button.Group>
+          </Modal.Footer>
+        </Modal.Content>
+      </Modal>
+
+      {/* Modal for inputting temp...keyboardavoidingview wouldn't work */}
+      <Modal isOpen={showTempModal} avoidKeyboard={true} onClose={() => setShowTempModal(false)}>
+        <Modal.Content maxWidth="400px">
+          <Modal.CloseButton />
+          <Modal.Header>{`Set Temperature for Row ${callingRow}`}</Modal.Header>
+
+          {/* The body holds the input labels and input areas */}
+          {/* Placeholder to show the currently saved time; value to dynamically update with input */}
+          <Modal.Body>
+            <FormControl w="100%">
+              <FormControl.Label>Temperature {appStates.useCelsiusBool ? "(°C)" : "(°F)"}</FormControl.Label>
+              <Input p="1" fontSize={18} textAlign="center" 
+                placeholder={
+                  appStates.scheduleRowsObj[0].temp 
+                }
+                value={
+                  rowTemp
+                }
+                onChangeText={(text) => {
+                  const upperLimit = appStates.useCelsiusBool ? 260 : 500
+                  if (parseInt(text) >= 0 && parseInt(text) <= upperLimit) {
+                    setRowTemp(text)
+                  }
+                }}
+              />
+              <FormControl.Label>[{appStates.useCelsiusBool ? "40" : "100"} - {appStates.useCelsiusBool ? "260" : "500"}]</FormControl.Label>
+            </FormControl>
+          </Modal.Body>
+
+          <Modal.Footer>
+            <Button.Group space={2}>
+              <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                setRowTemp("")
+                setShowTempModal(false)
+              }}>
+                Cancel
+              </Button>
+              <Button onPress={() => {
+                const intTemp = parseInt(rowTemp)
+                const lowerLimit = appStates.useCelsiusBool ? 40 : 100
+                if (intTemp < lowerLimit) {
+                  Alert.alert(
+                    "Invalid Value", 
+                    `Please enter a temperature in range ${appStates.useCelsiusBool ? "[40 - 260]" : "[100 - 500]"}`
+                  )
+                  setRowTemp("")
+                }
+                else {
+                  setShowTempModal(false)
+                  const unit = appStates.useCelsiusBool ? " °C" : " °F"
+  
+                  // Keeps current value if nothing was changed
+                  const newRowTemp = rowTemp === "" ? appStates.scheduleRowsObj[callingRow - 1].temp : rowTemp.split(" ")[0] + unit
+                  const newRows = appStates.scheduleRowsObj.map((r) => {
+                    if (r.index === callingRow) {
+                      return({
+                        num: r.num,
+                        temp: newRowTemp,
+                        time: r.time,
+                        intTime: r.intTime,
+                        color: r.color,
+                        index: r.index,
+                      })
+                    }
+                    return(r)
+                  })
+                  appStates.setScheduleRows(newRows)
+                  setRowTemp("")
+                }
               }}>
                 Save
               </Button>

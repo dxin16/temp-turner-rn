@@ -10,6 +10,7 @@ import {
   Switch,
   Center,
   Box,
+  KeyboardAvoidingView,
 } from "native-base";
 import Icon from 'react-native-vector-icons/AntDesign';
 import CurrentBlock from './CurrentBlock';
