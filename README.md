@@ -13,13 +13,9 @@ As a brief summary of the files in `TempTurner/src`, most of the main content is
 For the other files, `App.js` is a high-level wrapper for the three blocks; it also sets up the ScheduleContext and contains the other screens for the app (Camera and Settings). `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
 
 Main remaining goals:
- - Finish up http request integration
-   - Manage request failures
-   - Smoke Level display and simple alert system
- - Add in more graphics
-   - Visual Indicators for temperature, smoke, time
-   - App Icon and Splash Screen
-   - Overall app appearance and style
+ - Implement graphics
+   - Move the visual indicators to the main screen
+   - Work on Overall app appearance and style
  - Indication when target temp isn't reached
 
 Additional goals:

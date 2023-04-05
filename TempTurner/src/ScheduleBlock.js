@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Platform, useWindowDimensions, Alert } from 'react-native';
+import { View, Platform, useWindowDimensions, Alert, Keyboard } from 'react-native';
 import { 
   VStack,
   Center,
@@ -463,12 +463,17 @@ function ScheduleBlock() {
           <Modal.Footer>
             <Button.Group space={2}>
               <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                // Don't keep modal input area focused when exiting modal
+                Keyboard.dismiss()
+
+                // Clear fields since Cancel was clicked
                 setRowTime([-1, -1, -1])
                 setShowTimeModal(false)
               }}>
                 Cancel
               </Button>
               <Button onPress={() => {
+                Keyboard.dismiss()
                 setShowTimeModal(false)
 
                 // Keeps current value if nothing was changed
@@ -534,12 +539,14 @@ function ScheduleBlock() {
           <Modal.Footer>
             <Button.Group space={2}>
               <Button variant="ghost" colorScheme="blueGray" onPress={() => {
+                Keyboard.dismiss()
                 setRowTemp("")
                 setShowTempModal(false)
               }}>
                 Cancel
               </Button>
               <Button onPress={() => {
+                Keyboard.dismiss()
                 const intTemp = parseInt(rowTemp)
                 const lowerLimit = appStates.useCelsiusBool ? 40 : 100
                 if (intTemp < lowerLimit) {
