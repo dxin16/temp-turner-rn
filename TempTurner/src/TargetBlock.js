@@ -9,6 +9,7 @@ import {
 } from "native-base";
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
+import LinearGradient from 'react-native-linear-gradient';
 
 function TargetBlock({ navi }) {
   // Grab the ScheduleContext to access shared state variables
@@ -17,9 +18,16 @@ function TargetBlock({ navi }) {
 
   // Set the target and timer displays
   const [timerCount, setTimer] = useState(0)
-  const [targetTemp, setTargetTemp] = useState("---")
+  const [targetTemp, setTargetTemp] = useState("400 °F")
   const [targetInt, setTargetInt] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
+
+  const [tempFill, setTempFill] = useState(0.5)
+  const [tempEmpty, setTempEmpty] = useState(0.2)
+
+  const [maxTime, setMaxTime] = useState(0)
+  const [timeFill, setTimeFill] = useState(1)
+  const [timeEmpty, setTimeEmpty] = useState(1)
 
   // Temporary testing variable to control http request
   const [reqTries, setReqTries] = useState(0)
@@ -62,6 +70,9 @@ function TargetBlock({ navi }) {
       appStates.setUpdateTarget(false)
       setIsRunning(true)
 
+      const maxTemp = appStates.useCelsiusBool ? 260 : 500
+      var curTemp = 0
+
       // If there's only one row, it should be the disabled one with the plus button
       // So, only try to retrieve the row if there is more than one row.
       if (appStates.scheduleRowsObj.length > 1) {
@@ -74,15 +85,36 @@ function TargetBlock({ navi }) {
           setTargetInt(0)
         }
         else {
-          setTargetTemp(appStates.scheduleRowsObj[0].temp)
-          setTargetInt(parseInt(appStates.scheduleRowsObj[0].temp.split(' ')[0]))
+          const newTemp = appStates.scheduleRowsObj[0].temp
+          curTemp = parseInt(newTemp.split(' ')[0])
+
+          setTargetTemp(newTemp)
+          setTargetInt(parseInt(newTemp.split(' ')[0]))
         }
-        setTimer(appStates.scheduleRowsObj[0].intTime)
+        const newTime = appStates.scheduleRowsObj[0].intTime
+        setTimer(newTime)
+        setMaxTime(newTime)
       }
       else {
         setIsRunning(false)
         setTargetTemp("---")
       }
+
+      // Set values for visual indicators
+      const tempFillVal = curTemp / maxTemp
+      const tempFillLv1 = 1 - tempFillVal
+      const tempFillLv2 = tempFillLv1 < 0.5 ? 0.5 : tempFillLv1
+      setTempEmpty(tempFillLv1)
+      setTempFill(tempFillLv2)
+    }
+
+    // Update timer bar
+    if (maxTime > 0 && isRunning) {
+      const timeFillVal = timerCount / maxTime
+      const timeFillLv1 = 1 - timeFillVal
+      const timeFillLv2 = timeFillLv1 < 0.5 ? 0.5 : timeFillLv1
+      setTimeEmpty(timeFillLv1)
+      setTimeFill(timeFillLv2)
     }
 
     // Update display when timer hits 0 (-1 just so the value 00:00:00 actually shows up)
@@ -130,7 +162,7 @@ function TargetBlock({ navi }) {
 
       {/* Section Title & Settings Button */}
       <HStack p="6px" h="30%" justifyContent="space-between">
-          <Text w="50%" fontSize={24}>Current Setting</Text>
+          <Text w="60%" fontSize={24}>Current Setting</Text>
           <Button w="40%" h="70%" p="3px" variant="ghost" colorScheme="yellow" bg="yellow.200"
             onPress={() => navi.navigate("Settings")}
           >
@@ -143,26 +175,46 @@ function TargetBlock({ navi }) {
         <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Send</Button>
       </Center> */}
 
-      {/* Value Labels */}
-      <HStack w="100%" h="33%">
-        <Center w="50%">
-          <Text fontSize={20}>Target</Text>
-          <Text fontSize={20}>Temperature</Text>
-        </Center>
-        <Center w="50%">
-          <Text fontSize={20}>Time</Text>
-          <Text fontSize={20}>Left</Text>
-        </Center>
-      </HStack>
+      <HStack w="100%" h="66%">
 
-      {/* Actual Values */}
-      <HStack w="100%" h="33%" pb="25px">
-        <Center w="50%">
-          <Text fontSize={28} color="orange.500">{targetTemp}</Text>
+        <VStack w="50%" h="100%" ml="-16px">
+          {/* Value Labels */}
+          <Center h="50%">
+            <Text fontSize={20}>Target</Text>
+            <Text fontSize={20}>Temperature</Text>
+            </Center>
+          <Center h="50%" pb="25px">
+            <Text fontSize={28} color="orange.500">{targetTemp}</Text>
+          </Center>
+        </VStack>
+
+        <Center w="5%" h="80%" ml="-20px">
+          <LinearGradient paddingBottom={18} paddingRight={2}
+            colors={['#FFFFFF', '#F36B45', '#F8A647', '#FDE047']}
+            locations={[tempEmpty, tempEmpty, tempFill, 1]}
+            borderWidth={1} borderRadius={10}>
+              <Text fontSize={11}>{`-\n-\n-\n-`}</Text>
+          </LinearGradient>
+          <Center w="100%" h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
         </Center>
-        <Center w="50%">
-          <TimeDisplay />
+
+        <VStack w="40%" h="100%" ml="15px">
+          {/* Actual Values */}
+          <Center h="50%">
+            <Text fontSize={20}>Time</Text>
+            <Text fontSize={20}>Remaining</Text>
+          </Center>
+          <Center h="50%" pb="25px">
+            <TimeDisplay />
+          </Center>
+        </VStack>
+
+        <Center w="5%" h="80%" ml="-5px">
+          <LinearGradient paddingVertical={45} paddingHorizontal={4} borderWidth={1}
+            colors={['#FFFFFF', '#00D4FF', '#1AB5FF', '#1A91FF']} 
+            locations={[timeEmpty, timeEmpty, timeFill, 1]} />
         </Center>
+
       </HStack>
 
       <Text h="10%" pt="0" ml="5px" mt="-10px" color={issueColor}>Target Temperature is not being sent!</Text>

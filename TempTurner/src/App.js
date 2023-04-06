@@ -77,7 +77,7 @@ function SettingsScreen() {
       </HStack>
       
       {/* Mockups for visual indicators */}
-      <Center w="100%" h="50%" pt="2" bg="light.300">
+      {/* <Center w="100%" h="50%" pt="2" bg="light.300">
         <HStack h="100%">
 
           <Center w="33%">
@@ -109,7 +109,7 @@ function SettingsScreen() {
           </Center>
 
         </HStack>
-      </Center>
+      </Center> */}
     </NativeBaseProvider>
   )
 }

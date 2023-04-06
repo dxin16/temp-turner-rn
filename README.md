@@ -14,7 +14,6 @@ For the other files, `App.js` is a high-level wrapper for the three blocks; it a
 
 Main remaining goals:
  - Implement graphics
-   - Move the visual indicators to the main screen
    - Work on Overall app appearance and style
  - Indication when target temp isn't reached
 
