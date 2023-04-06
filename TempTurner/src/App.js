@@ -59,6 +59,12 @@ function CameraScreen() {
 function SettingsScreen() {
   const appStates = useContext(ScheduleContext)
 
+  const maxTemp = 500
+  const curTemp = 500
+  const fillVal = curTemp / maxTemp
+  const fillLv1 = 1 - fillVal
+  const fillLv2 = fillLv1 < 0.5 ? 0.5 : fillLv1
+
   return (
     <NativeBaseProvider>
       <HStack p="5" w="100%" h="10%">
@@ -75,26 +81,29 @@ function SettingsScreen() {
         <HStack h="100%">
 
           <Center w="33%">
-            
-            <LinearGradient paddingBottom={10} paddingRight={3}
-              colors={['#F36B45', '#F8A647', '#FDE047']} 
+
+            <Center h="25%">
+            <LinearGradient paddingBottom={18} paddingRight={3}
+              colors={['#FFFFFF', '#F36B45', '#F8A647', '#FDE047']}
+              locations={[fillLv1, fillLv1, fillLv2, 1]}
               borderWidth={1} borderRadius={10}>
                 <Text fontSize={12}>{`-\n-\n-\n-`}</Text>
             </LinearGradient>
-            
+            </Center>
+
             <Center w="16.8%" h="5.6%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
           </Center>
           <Center w="33%">
-            <Icon marginBottom={-15} marginLeft={20} name="cloud" size={50} color="#78716c" />
-            <Icon marginBottom={-10} marginLeft={12} name="cloud" size={40} color="#a8a29e" />
-            <Icon name="cloud" size={30} color="#f5f5f4" />
+            <Icon marginBottom={-15} marginLeft={20} name="cloudo" size={50} color="#78716c" />
+            <Icon marginBottom={-10} marginLeft={12} name="cloudo" size={40} color="#a8a29e" />
+            <Icon name="cloudo" size={30} color="#f5f5f4" />
           </Center>
           <Center w="33%">
 
             <Center>
-              <Box bg="white" py={`${10}px`} px="5px" />
-              <LinearGradient paddingVertical={40} paddingHorizontal={5}
-                colors={['#00D4FF', '#1AB5FF', '#1A91FF']} />
+              <LinearGradient paddingVertical={45} paddingHorizontal={5} borderWidth={1}
+                colors={['#FFFFFF', '#00D4FF', '#1AB5FF', '#1A91FF']} 
+                locations={[fillLv1, fillLv1, fillLv2, 1]} />
             </Center>
 
           </Center>
@@ -136,16 +145,11 @@ function App() {
   
   // Define the ScheduleContext values
   const scheduleSettings = {
-    scheduleRowsObj: scheduleRows,
-    targetBool: updateTarget,
-    scheduleBool: updateSchedule,
-    useCelsiusBool: useCelsius,
-    smokeWarnBool: smokeWarn,
-    setScheduleRows,
-    setUpdateTarget,
-    setUpdateSchedule,
-    setUseCelsius,
-    setSmokeWarn,
+    scheduleRowsObj: scheduleRows, setScheduleRows,
+    targetBool: updateTarget, setUpdateTarget,
+    scheduleBool: updateSchedule, setUpdateSchedule,
+    useCelsiusBool: useCelsius, setUseCelsius,
+    smokeWarnBool: smokeWarn, setSmokeWarn,
   }
 
   // Return/render the main app
