@@ -18,12 +18,12 @@ function TargetBlock({ navi }) {
 
   // Set the target and timer displays
   const [timerCount, setTimer] = useState(0)
-  const [targetTemp, setTargetTemp] = useState("400 °F")
+  const [targetTemp, setTargetTemp] = useState("---")
   const [targetInt, setTargetInt] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
 
-  const [tempFill, setTempFill] = useState(0.5)
-  const [tempEmpty, setTempEmpty] = useState(0.2)
+  const [tempFill, setTempFill] = useState(1)
+  const [tempEmpty, setTempEmpty] = useState(1)
 
   const [maxTime, setMaxTime] = useState(0)
   const [timeFill, setTimeFill] = useState(1)

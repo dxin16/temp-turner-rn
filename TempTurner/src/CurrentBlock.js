@@ -19,12 +19,14 @@ function CurrentBlock({ navi }) {
   // State variables to contain wifi-related info
   // reqTries is a temporary way to control and test the sending of http requests
   const [reqTries, setReqTries] = useState(0)
-  const [currentTemp, setCurrentTemp] = useState("400 °F")
-  const [smokeLevel, setSmokeLevel] = useState("Medium")
-  const [smokeLevelInt, setSmokeLevelInt] = useState(2)
+  const [currentTemp, setCurrentTemp] = useState("---")
   const [issueColor, setIssueColor] = useState("light.300")
-  const [fillLevel, setFillLevel] = useState(0.5)
-  const [emptyLevel, setEmptyLevel] = useState(0.2)
+
+  const [smokeLevel, setSmokeLevel] = useState("---")
+  const [smokeLevelInt, setSmokeLevelInt] = useState(0)
+  
+  const [fillLevel, setFillLevel] = useState(1)
+  const [emptyLevel, setEmptyLevel] = useState(1)
 
   // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
   useEffect(() => {
@@ -53,7 +55,7 @@ function CurrentBlock({ navi }) {
     setCurrentTemp(tempFromText + tempUnitSuffix)
 
     const smokeValue = parseFloat(smokeFromText)
-    const smokeQuality =    smokeValue < 1 ? "Low" : smokeValue < 3 ? "Medium" : "High"
+    const smokeQuality    = smokeValue < 1 ? "Low" : smokeValue < 3 ? "Medium" : "High"
     const smokeQualityInt = smokeValue < 1 ?   1   : smokeValue < 3 ?     2    :    3
     if (smokeQuality === "High") { appStates.setSmokeWarn(true) }
       else { appStates.setSmokeWarn(false) }
@@ -123,6 +125,7 @@ function CurrentBlock({ navi }) {
             <Center h="50%" pb="25px">
               <Text pb="25px" fontSize={28} 
                 color={
+                  smokeLevel === "---" ? "black" :
                   smokeLevel === "Low" ? "green.600" :
                   smokeLevel === "Medium" ? "yellow.600" : "red.600"
                 }
