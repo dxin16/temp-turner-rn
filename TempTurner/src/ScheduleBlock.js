@@ -528,7 +528,10 @@ function ScheduleBlock() {
                 onChangeText={(text) => {
                   const upperLimit = appStates.useCelsiusBool ? 260 : 500
                   if (parseInt(text) >= 0 && parseInt(text) <= upperLimit) {
-                    setRowTemp(text)
+                    setRowTemp(parseInt(text).toString())
+                  }
+                  if (text === "") {
+                    setRowTemp("")
                   }
                 }}
               />
