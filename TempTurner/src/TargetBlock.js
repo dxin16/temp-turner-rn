@@ -36,12 +36,15 @@ function TargetBlock({ navi }) {
   // Send data to ESP32 (http POST -> ESP32 web server @ its ip)
   useEffect(() => {
     var hasErr = false
+    
+    // Always send target temp as fahrenheit
+    const postTemp = appStates.useCelsiusBool ? Math.round((targetInt * 9/5) + 32) : targetInt
 
     fetch('http://172.20.10.14/target', {
       method: 'POST',
       headers: {
       },
-      body: `temp=${targetInt}`
+      body: `temp=${postTemp}`
     })
     .catch(error => {
       console.error(error)
@@ -98,6 +101,7 @@ function TargetBlock({ navi }) {
       else {
         setIsRunning(false)
         setTargetTemp("---")
+        setTargetInt(0)
       }
 
       // Set values for visual indicators
@@ -132,6 +136,19 @@ function TargetBlock({ navi }) {
     }, 1000)
     return () => clearInterval(interval)
   }, [timerCount, appStates.targetBool]);
+
+  // When the Fahrenheit/Celsius toggle is used, adjust Target Temperature accordingly
+  useEffect(() => {
+    if (targetInt > 0) {
+      const oldTemp = targetInt
+      const newTemp = appStates.useCelsiusBool ?
+        Math.round((oldTemp - 32) * 5/9) : Math.round((oldTemp * 9/5) + 32)
+      
+      const newTempString = newTemp.toString() + tempUnitSuffix
+      setTargetTemp(newTempString)
+      setTargetInt(newTemp)
+    }
+  }, [appStates.useCelsiusBool])
 
   // Function to manage time display to look correct for hh:mm:ss format
   function TimeDisplay() {
