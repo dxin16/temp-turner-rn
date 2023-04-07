@@ -11,14 +11,12 @@ import {
   Center,
   Box,
 } from "native-base";
-import Icon from 'react-native-vector-icons/AntDesign';
 import CurrentBlock from './CurrentBlock';
 import TargetBlock from './TargetBlock';
 import ScheduleBlock from './ScheduleBlock';
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
 import { WebView } from 'react-native-webview';
-import LinearGradient from 'react-native-linear-gradient';
 import SplashScreen from 'react-native-splash-screen';
 
 // Main screen
@@ -59,11 +57,12 @@ function CameraScreen() {
 function SettingsScreen() {
   const appStates = useContext(ScheduleContext)
 
-  const maxTemp = 500
-  const curTemp = 500
-  const fillVal = curTemp / maxTemp
-  const fillLv1 = 1 - fillVal
-  const fillLv2 = fillLv1 < 0.5 ? 0.5 : fillLv1
+  // Visual Indicator Values
+  // const maxTemp = 500
+  // const curTemp = 500
+  // const fillVal = curTemp / maxTemp
+  // const fillLv1 = 1 - fillVal
+  // const fillLv2 = fillLv1 < 0.5 ? 0.5 : fillLv1
 
   return (
     <NativeBaseProvider>
@@ -110,6 +109,7 @@ function SettingsScreen() {
 
         </HStack>
       </Center> */}
+
     </NativeBaseProvider>
   )
 }
@@ -157,7 +157,7 @@ function App() {
     <ScheduleContext.Provider value={scheduleSettings}>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="The Temp Turner" component={HomeScreen} />
+          <Stack.Screen name="Temp Turner" component={HomeScreen} />
           <Stack.Screen name="Camera View" component={CameraScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>

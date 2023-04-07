@@ -175,10 +175,11 @@ function TargetBlock({ navi }) {
         <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Send</Button>
       </Center> */}
 
+      {/* Labels, Values, and Visual Indicators */}
       <HStack w="100%" h="66%">
 
+        {/* Target Temp */}
         <VStack w="50%" h="100%" ml="-16px">
-          {/* Value Labels */}
           <Center h="50%">
             <Text fontSize={20}>Target</Text>
             <Text fontSize={20}>Temperature</Text>
@@ -188,6 +189,7 @@ function TargetBlock({ navi }) {
           </Center>
         </VStack>
 
+        {/* Thermometer */}
         <Center w="5%" h="80%" ml="-20px">
           <LinearGradient paddingBottom={18} paddingRight={2}
             colors={['#FFFFFF', '#F36B45', '#F8A647', '#FDE047']}
@@ -198,8 +200,8 @@ function TargetBlock({ navi }) {
           <Center w="100%" h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
         </Center>
 
+        {/* Time Left */}
         <VStack w="40%" h="100%" ml="15px">
-          {/* Actual Values */}
           <Center h="50%">
             <Text fontSize={20}>Time</Text>
             <Text fontSize={20}>Remaining</Text>
@@ -209,6 +211,7 @@ function TargetBlock({ navi }) {
           </Center>
         </VStack>
 
+        {/* Time Bar */}
         <Center w="5%" h="80%" ml="-5px">
           <LinearGradient paddingVertical={45} paddingHorizontal={4} borderWidth={1}
             colors={['#FFFFFF', '#00D4FF', '#1AB5FF', '#1A91FF']} 
@@ -217,6 +220,7 @@ function TargetBlock({ navi }) {
 
       </HStack>
 
+      {/* http error indicator */}
       <Text h="10%" pt="0" ml="5px" mt="-10px" color={issueColor}>Target Temperature is not being sent!</Text>
 
     </VStack>

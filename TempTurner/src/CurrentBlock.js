@@ -86,17 +86,17 @@ function CurrentBlock({ navi }) {
             <Text fontSize={16} color="blue.600">View Camera</Text>
           </Button>
         </HStack>
-        
 
         {/* Button to send a GET request */}
         {/* <Center>
           <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Request</Button>
         </Center> */}
 
+        {/* Labels, Values, and Visual Indicators */}
         <HStack w="100%" h="66%">
 
+          {/* Current Temp */}
           <VStack w="50%" h="100%" ml="-15px">
-            {/* Value Labels */}
             <Center h="50%">
               <Text fontSize={20}>Current</Text>
               <Text fontSize={20}>Temperature</Text>
@@ -106,6 +106,7 @@ function CurrentBlock({ navi }) {
             </Center>
           </VStack>
 
+          {/* Thermometer */}
           <Center w="5%" h="80%" ml="-20px">
             <LinearGradient paddingBottom={18} paddingRight={2}
               colors={['#FFFFFF', '#F36B45', '#F8A647', '#FDE047']}
@@ -115,9 +116,9 @@ function CurrentBlock({ navi }) {
             </LinearGradient>
             <Center w="100%" h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
           </Center>
-
+          
+          {/* Smoke Level */}
           <VStack w="40%" h="100%" ml="15px">
-            {/* Actual Values */}
             <Center h="50%">
               <Text fontSize={20}>Smoke</Text>
               <Text fontSize={20}>Level</Text>
@@ -133,6 +134,7 @@ function CurrentBlock({ navi }) {
             </Center>
           </VStack>
 
+          {/* Clouds */}
           <Center w="15%" h="80%" ml="-15px">
             <Icon marginBottom={-15} marginLeft={-20} size={50} color="#78716c"
               name={smokeLevelInt > 2 ? "cloud" :"cloudo"} />
@@ -144,6 +146,7 @@ function CurrentBlock({ navi }) {
 
         </HStack>
 
+        {/* http error indicator */}
         <Text h="10%" pt="0" ml="5px" mt="-10px" color={issueColor}>Current Status is not being received!</Text>
 
       </VStack>
