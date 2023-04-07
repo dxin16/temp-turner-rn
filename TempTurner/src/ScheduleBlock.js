@@ -88,23 +88,25 @@ function ScheduleBlock() {
 
   // Update rows on Popover selection
   useEffect(() => {
-    if (rowEditInfo.option === "move") {
-      // Use JSON conversion to deep copy the schedule rows
-      const currentRows = JSON.parse(JSON.stringify(appStates.scheduleRowsObj))
-      const newRows = appStates.scheduleRowsObj
-      const rowToMove = {...currentRows[rowEditInfo.rowNum - 1]}
+    if (rowEditInfo.option === "moveup") {
+      if (rowEditInfo.rowNum === 1) {
+        Alert.alert("Can't Move Row", "There is no row above to swap with.")
+      }
+      else {
+        const currentRows = JSON.parse(JSON.stringify(appStates.scheduleRowsObj))
+        const rowToMove = {...currentRows[rowEditInfo.rowNum - 1]}
+        const newRows = appStates.scheduleRowsObj
 
-      newRows.forEach((row, ind) => {
-        if (ind < rowEditInfo.rowNum) {
-          if (ind === 0) {
+        newRows.forEach((row, ind) => {
+          if (ind === rowEditInfo.rowNum - 2) {
             row.num = ind + 1
             row.temp = rowToMove.temp
             row.time = rowToMove.time
             row.intTime = rowToMove.intTime
             row.color = rowToMove.color
             row.index = ind + 1
-          } 
-          else {
+          }
+          if (ind === rowEditInfo.rowNum - 1) {
             row.num = ind + 1
             row.temp = currentRows[ind - 1].temp
             row.time = currentRows[ind - 1].time
@@ -112,8 +114,38 @@ function ScheduleBlock() {
             row.color = currentRows[ind - 1].color
             row.index = ind + 1
           }
-        }
-      })
+        })
+      }
+      setRowEditInfo({rowNum: -1, option: "none"})
+    }
+    if (rowEditInfo.option === "movedown") {
+      if (rowEditInfo.rowNum === appStates.scheduleRowsObj.length - 1) {
+        Alert.alert("Can't Move Row", "There is no row below to swap with.")
+      }
+      else {
+        const currentRows = JSON.parse(JSON.stringify(appStates.scheduleRowsObj))
+        const rowToMove = {...currentRows[rowEditInfo.rowNum - 1]}
+        const newRows = appStates.scheduleRowsObj
+
+        newRows.forEach((row, ind) => {
+          if (ind === rowEditInfo.rowNum - 1) {
+            row.num = ind + 1
+            row.temp = currentRows[ind + 1].temp
+            row.time = currentRows[ind + 1].time
+            row.intTime = currentRows[ind + 1].intTime
+            row.color = currentRows[ind + 1].color
+            row.index = ind + 1
+          }
+          if (ind === rowEditInfo.rowNum) {
+            row.num = ind + 1
+            row.temp = rowToMove.temp
+            row.time = rowToMove.time
+            row.intTime = rowToMove.intTime
+            row.color = rowToMove.color
+            row.index = ind + 1
+          }
+        })
+      }
       setRowEditInfo({rowNum: -1, option: "none"})
     }
     if (rowEditInfo.option === "delete") {
@@ -209,13 +241,28 @@ function ScheduleBlock() {
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
-                            option: "move",
+                            option: "moveup",
                           })
                         }}>
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text pl="2">Move Row to Top</Text>
+                                <Text pl="2">Swap with Row Above</Text>
+                              </Box>
+                            )
+                          }}
+                      </Pressable>
+                      <Pressable bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
+                        onPress={() => {
+                          setRowEditInfo({
+                            rowNum: row.num,
+                            option: "movedown",
+                          })
+                        }}>
+                          {({ isPressed }) => {
+                            return (
+                              <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
+                                <Text pl="2">Swap with Row Below</Text>
                               </Box>
                             )
                           }}

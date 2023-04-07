@@ -12,15 +12,12 @@ As a brief summary of the files in `TempTurner/src`, most of the main content is
 
 For the other files, `App.js` is a high-level wrapper for the three blocks; it also sets up the ScheduleContext and contains the other screens for the app (Camera and Settings). `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
 
-Main remaining goals:
- - Implement graphics
-   - Work on Overall app appearance and style
- - Indication when target temp isn't reached
-
-Additional goals:
+Remaining goals (optional):
  - Implement `Styles.js` to accomodate many phone sizes
  - Storage of "recipes" / saved schedules
- - Consider making it possible to specify where to move a row (currently only to the top)
+ - Make it possible to specify exactly where to move a row
+ - Work on overall app appearance and style
+ - Indication when target temp isn't reached
 
 ## Current Progress (ESP32 and Motor)
 As a brief summary of files in `Arduino_ESP32`, `MainPart.ino` contains the implementation for the ESP32 to connect to WiFi, then host and maintain a web server. Motor control is implemented in `Motor.ino` and in the folder `Arduino_ESP32/fbss_mt_demo`.
