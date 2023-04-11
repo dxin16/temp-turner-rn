@@ -19,19 +19,20 @@ private:
   double actuator_max;
   double* a_target_signal;
   double* a_feedback_signal;
-  volatile double pre;
-  volatile double out_p;
-  volatile double out_i;
-  volatile double out_d;
-  volatile double out_sum;
+  double* a_output_signal;
+  double pre;
+  double out_p;
+  double out_i;
+  double out_d;
+  double out_sum;
 
   void clamp();
   void limit();
   
 public:
   void setup_controller(Controller_Type, bool, ...);
-  void connect_signals(double*, double*);
-  double actuate();
+  void connect_signals(double*, double*, double*);
+  void actuate(double);
   void make_zero();
 };
 

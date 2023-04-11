@@ -17,23 +17,21 @@ const double dbar_ang_moe = 50;
 const double dbar_vel_moe = 0.02;
 const double pulse_width_moe = 6;
 const double ang_over_dbar = 1 / (d_ang_max - d_ang_min + 1);
-const double pow_over_ang = 1100;
+const double pow_over_ang = 1100.0;
 const uint8_t window_size = 11;
 
 bool read_pwm(mcpwm_unit_t, mcpwm_capture_channel_id_t, const cap_event_data_t*, void*);
 
-void setup_fbss(int, int, int, double*, double*);
-void calibrate_fbss();
+void setup_fbss(int, int, double*, double*);
 void actuate_fbss();
-void setup_pwm(int, int);
-void connect_controllers(double*, double*);
-void process_pwm_target();
-void process_pwm_feedback();
-void process_pwm_signals_fbss();
-void actuate_motor_controller();
-void set_motor_vel();
 void print_info();
 
+static void calibrate_fbss();
+static void setup_pwm(int, int);
+static void connect_controllers(double*, double*);
+static void process_pwm_target();
+static void process_pwm_feedback();
 static double calc_duty(int);
+static void set_motor_vel();
 
 #endif
