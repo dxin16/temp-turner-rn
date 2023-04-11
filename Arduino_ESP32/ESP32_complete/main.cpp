@@ -29,7 +29,7 @@ double temp_cur = 0;
 void setup() {
 
   //For fbss
-  setup_fbss(16, 18, 0, &temp_ref, &temp_cur);
+  setup_fbss(16, 18, &temp_ref, &temp_cur);
   temp_ref = (double) analogRead(34) / 1300;
   temp_cur = (double) analogRead(35) / 1300;
 
@@ -101,15 +101,13 @@ int over_Sample(int currentTemp){
 void loop() {
 
   //For fbss
-  temp_ref = (double) analogRead(34) / 1300;
-  temp_cur = (double) analogRead(35) / 1300;
+  temp_ref = (double) targetTemp;
+  temp_cur = (double) currentTemp;
   Serial.print("Reference Temp = ");
   Serial.println(temp_ref);
   Serial.print("Current Temp = ");
   Serial.println(temp_cur);
-  //actuate_fbss();
-  process_pwm_signals_fbss();
-  actuate_motor_controller();
+  actuate_fbss();
   print_info();
 
 
@@ -118,6 +116,7 @@ void loop() {
   // Read analog sensors
   currentTemp = analogRead(tempPin);
   currentTemp = over_Sample(currentTemp);
+  currentTemp = (currentTemp + 160) / 6;
 
   currentSmoke = analogRead(smokePin);
 
