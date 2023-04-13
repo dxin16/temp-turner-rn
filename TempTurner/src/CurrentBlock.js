@@ -38,7 +38,7 @@ function CurrentBlock({ navi }) {
       .then(response => response.text())
       .then(text => SetCurrentValues(text))
     .catch(error => {
-      console.error(error)
+      //console.error(error)
       setIssueColor("red.600")
       hasErr = true
     })
@@ -79,18 +79,13 @@ function CurrentBlock({ navi }) {
 
         {/* Section Title & Camera Button */}
         <HStack p="6px" h="30%" justifyContent="space-between">
-          <Text w="60%" fontSize={24}>Current Status</Text>
+          <Text w="60%" fontSize={24 * dims.ar}>Current Status</Text>
           <Button w="40%" h="70%" p="3px" variant="ghost" colorScheme="blue" bg="darkBlue.100"
             onPress={() => navi.navigate("Camera View")}
           >
-            <Text fontSize={16} color="blue.600">View Camera</Text>
+            <Text fontSize={16 * dims.ar} color="blue.600">View Camera</Text>
           </Button>
         </HStack>
-
-        {/* Button to send a GET request */}
-        {/* <Center>
-          <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Request</Button>
-        </Center> */}
 
         {/* Labels, Values, and Visual Indicators */}
         <HStack w="100%" h="66%">
@@ -98,11 +93,11 @@ function CurrentBlock({ navi }) {
           {/* Current Temp */}
           <VStack w="50%" h="100%" ml="-15px">
             <Center h="50%">
-              <Text fontSize={20}>Current</Text>
-              <Text fontSize={20}>Temperature</Text>
+              <Text fontSize={20 * dims.ar}>Current</Text>
+              <Text fontSize={20 * dims.ar}>Temperature</Text>
               </Center>
             <Center h="50%" pb="25px">
-              <Text fontSize={28} color="orange.500">{currentTemp}</Text>
+              <Text fontSize={28 * dims.ar} color="orange.500">{currentTemp}</Text>
             </Center>
           </VStack>
 
@@ -112,7 +107,7 @@ function CurrentBlock({ navi }) {
               colors={['#FFFFFF', '#F36B45', '#F8A647', '#FDE047']}
               locations={[emptyLevel, emptyLevel, fillLevel, 1]}
               borderWidth={1} borderRadius={10}>
-                <Text fontSize={11}>{`-\n-\n-\n-`}</Text>
+                <Text fontSize={11 * dims.ar}>{`-\n-\n-\n-`}</Text>
             </LinearGradient>
             <Center w="100%" h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
           </Center>
@@ -120,8 +115,8 @@ function CurrentBlock({ navi }) {
           {/* Smoke Level */}
           <VStack w="40%" h="100%" ml="15px">
             <Center h="50%">
-              <Text fontSize={20}>Smoke</Text>
-              <Text fontSize={20}>Level</Text>
+              <Text fontSize={20 * dims.ar}>Smoke</Text>
+              <Text fontSize={20 * dims.ar}>Level</Text>
             </Center>
             <Center h="50%" pb="25px">
               <Text pb="25px" fontSize={28} 

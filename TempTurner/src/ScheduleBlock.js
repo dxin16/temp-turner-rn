@@ -23,6 +23,7 @@ function ScheduleBlock() {
   // Grab the ScheduleContext to access shared state variables
   const appStates = useContext(ScheduleContext)
   const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
+  const [isRunning, setIsRunning] = useState(false)
   
   // Modal useStates
   const [showTimeModal, setShowTimeModal] = useState(false)
@@ -63,6 +64,9 @@ function ScheduleBlock() {
 
       setNumRows(appStates.scheduleRowsObj.length)
       appStates.setUpdateTarget(true)
+    }
+    if (appStates.scheduleRowsObj.length === 1) {
+      setIsRunning(false)
     }
   }, [appStates.scheduleBool])
 
@@ -217,7 +221,7 @@ function ScheduleBlock() {
                   }    
                 }
               >
-                <Text fontSize={24}>{row.num}</Text>
+                <Text fontSize={24 * dims.ar}>{row.num}</Text>
               </Button>
             :
               <Popover defaultIsOpen={false} placement="top left" trigger={triggerProps => {
@@ -226,7 +230,7 @@ function ScheduleBlock() {
                     {({ isPressed }) => {
                       return (
                         <Center w="100%" p="1" px="3" bg={row.color === "active" ? bgColor: isPressed ? "#93908A" : "light.400"}>
-                          <Text fontSize={24}>{row.num}</Text>
+                          <Text fontSize={24 * dims.ar}>{row.num}</Text>
                         </Center>
                     )}}
                   </Pressable>
@@ -237,7 +241,7 @@ function ScheduleBlock() {
                   <Popover.Header>Edit Row</Popover.Header>
                   <Popover.Body p="0" pb="1" bg="gray.100">
                     <VStack>
-                      <Pressable bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
+                      <Pressable isDisabled={isRunning} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -247,7 +251,7 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text pl="2">Swap with Row Above</Text>
+                                <Text color={isRunning ? "light.300" : "black"} pl="2">Swap with Row Above</Text>
                               </Box>
                             )
                           }}
@@ -315,7 +319,7 @@ function ScheduleBlock() {
                 setShowTempModal(true)
               }
             }}>
-            <Text fontSize={24} color={textColor}>{row.temp}</Text>
+            <Text fontSize={24 * dims.ar} color={textColor}>{row.temp}</Text>
           </Button>
         </Center>
 
@@ -330,7 +334,7 @@ function ScheduleBlock() {
                 setShowTimeModal(true)
               }
             }}>
-            <Text fontSize={24} color={textColor}>{row.time}</Text>
+            <Text fontSize={24 * dims.ar} color={textColor}>{row.time}</Text>
           </Button>
         </Center>
       </HStack>
@@ -369,24 +373,66 @@ function ScheduleBlock() {
 
         {/* Section Title & Start Button */}
         <HStack p="6px" h="15%" justifyContent="space-between">
-          <Text w="50%" fontSize={24}>Scheduling</Text>
-          <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="green" bg="green.200"
-            onPress={() => appStates.setUpdateTarget(true)}
-          >
-            <Text fontSize={16} color="green.600">Start Schedule</Text>
-          </Button>
+          <Text w="50%" fontSize={24 * dims.ar}>Scheduling</Text>
+          {
+            isRunning ? 
+              <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="red" bg="red.200"
+              onPress={() => {
+                if (appStates.scheduleRowsObj[0].time !== "00:00:00") {
+                  Alert.alert(
+                    "Stop Running?", 
+                    "Time remaining will stay visible.",
+                    [
+                      {text: 'Cancel', onPress: () => {}, style: "cancel"},
+                      {text: 'OK', onPress: () => {
+                        appStates.setUpdateTarget(true)
+                        setIsRunning(false)
+                      }}
+                    ]
+                  )
+                }
+              }}>
+                <Text fontSize={16 * dims.ar} color="red.600">Stop Schedule</Text>
+              </Button> 
+            :
+              <Button w="40%" h="90%" p="3px" variant="ghost" colorScheme="green" bg="green.200"
+              onPress={() => {
+                var emptyFlag = false
+                const rowVals = appStates.scheduleRowsObj.values()
+                for (const rowVal of rowVals) {
+                  if (rowVal.num !== "+" &&
+                      (rowVal.temp === "---" + tempUnitSuffix || rowVal.time === "--:--:--")) {
+                    emptyFlag = true
+                  }
+                }
+                if (appStates.scheduleRowsObj.length === 1) {
+                  Alert.alert("Cannot Start Schedule", "There are no rows. Please add some.")
+                }
+                else if (emptyFlag) {
+                  Alert.alert("Cannot Start Schedule", 
+                    `There are empty values. Please set them or delete the associated rows.
+                    \nSome options can be found by tapping on the row numbers.`)
+                }
+                else {
+                  appStates.setUpdateTarget(true)
+                  setIsRunning(true)
+                }
+              }}>
+                <Text fontSize={16 * dims.ar} color="green.600">Start Schedule</Text>
+              </Button>
+          }
         </HStack>
 
         {/* Value Labels */}
         <HStack pl="4%" pb="4px" w="100%" h="10%" space={2}>
           <Center w="12%">
-            <Text fontSize={20}>#</Text>
+            <Text fontSize={20 * dims.ar}>#</Text>
           </Center>
           <Center w="40%">
-            <Text fontSize={20}>Temperature</Text>
+            <Text fontSize={20 * dims.ar}>Temperature</Text>
           </Center>
           <Center w="40%">
-            <Text fontSize={20}>Time @ Temp</Text>
+            <Text fontSize={20 * dims.ar}>Time @ Temp</Text>
           </Center>
         </HStack>
 
@@ -419,7 +465,7 @@ function ScheduleBlock() {
             <HStack space={1}>
               <FormControl w="30%">
                 <FormControl.Label>Hours</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center" 
+                <Input p="1" fontSize={18 * dims.ar} textAlign="center" 
                   placeholder={
                     appStates.scheduleRowsObj[callingRow - 1] ?
                     appStates.scheduleRowsObj[callingRow - 1].time.split(":")[0] : "00"
@@ -445,12 +491,12 @@ function ScheduleBlock() {
 
               <FormControl w="2%">
                 <FormControl.Label> </FormControl.Label>
-                <Text fontSize={18}>:</Text>
+                <Text fontSize={18 * dims.ar}>:</Text>
               </FormControl>
               
               <FormControl w="30%">
                 <FormControl.Label>Minutes</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center"
+                <Input p="1" fontSize={18 * dims.ar} textAlign="center"
                   placeholder={
                     appStates.scheduleRowsObj[callingRow - 1] ?
                     appStates.scheduleRowsObj[callingRow - 1].time.split(":")[1] : "00"
@@ -476,12 +522,12 @@ function ScheduleBlock() {
 
               <FormControl w="2%">
                 <FormControl.Label> </FormControl.Label>
-                <Text fontSize={18}>:</Text>
+                <Text fontSize={18 * dims.ar}>:</Text>
               </FormControl>
 
               <FormControl w="30%">
                 <FormControl.Label>Seconds</FormControl.Label>
-                <Input p="1" fontSize={18} textAlign="center"
+                <Input p="1" fontSize={18 * dims.ar} textAlign="center"
                   placeholder={
                     appStates.scheduleRowsObj[callingRow - 1] ?
                     appStates.scheduleRowsObj[callingRow - 1].time.split(":")[2] : "00"
@@ -565,9 +611,10 @@ function ScheduleBlock() {
           <Modal.Body>
             <FormControl w="100%">
               <FormControl.Label>Temperature {appStates.useCelsiusBool ? "(°C)" : "(°F)"}</FormControl.Label>
-              <Input p="1" fontSize={18} textAlign="center" 
+              <Input p="1" fontSize={18 * dims.ar} textAlign="center" 
                 placeholder={
-                  appStates.scheduleRowsObj[0].temp 
+                  appStates.scheduleRowsObj[callingRow - 1] ? 
+                  appStates.scheduleRowsObj[callingRow - 1].temp : "---" + tempUnitSuffix
                 }
                 value={
                   rowTemp

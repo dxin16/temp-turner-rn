@@ -47,7 +47,7 @@ function HomeScreen({ navigation }) {
 function CameraScreen() {
   return (
     <NativeBaseProvider>
-      <WebView source={{ uri: "https://google.com" }} />
+      <WebView source={{ uri: "http://172.20.10.2" }} />
     </NativeBaseProvider>
   );
 }
@@ -67,12 +67,12 @@ function SettingsScreen() {
   return (
     <NativeBaseProvider>
       <HStack p="5" w="100%" h="10%">
-        <Text fontSize={20} w="70%">Temperature Units</Text>
-        <Text fontSize={20}>°F</Text>
+        <Text fontSize={20 * dims.ar} w="70%">Temperature Units</Text>
+        <Text fontSize={20 * dims.ar}>°F</Text>
         <Switch size="sm" offTrackColor="blue.200" onTrackColor="blue.200" isChecked={appStates.useCelsiusBool}
           onToggle={() => appStates.setUseCelsius(!appStates.useCelsiusBool)}
         />
-        <Text fontSize={20}>°C</Text>
+        <Text fontSize={20 * dims.ar}>°C</Text>
       </HStack>
       
       {/* Mockups for visual indicators */}

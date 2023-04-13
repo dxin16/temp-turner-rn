@@ -18,6 +18,7 @@ function TargetBlock({ navi }) {
 
   // Set the target and timer displays
   const [timerCount, setTimer] = useState(0)
+  const [timerIsActive, setTimerIsActive] = useState(true)
   const [targetTemp, setTargetTemp] = useState("---")
   const [targetInt, setTargetInt] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
@@ -47,7 +48,7 @@ function TargetBlock({ navi }) {
       body: `temp=${postTemp}`
     })
     .catch(error => {
-      console.error(error)
+      //console.error(error)
       setIssueColor("red.600")
       hasErr = true
     })
@@ -71,50 +72,86 @@ function TargetBlock({ navi }) {
     // When the Start Schedule button is pressed, this will change to true
     if (appStates.targetBool) {
       appStates.setUpdateTarget(false)
-      setIsRunning(true)
 
-      const maxTemp = appStates.useCelsiusBool ? 260 : 500
-      var curTemp = 0
-
-      // If there's only one row, it should be the disabled one with the plus button
-      // So, only try to retrieve the row if there is more than one row.
-      if (appStates.scheduleRowsObj.length > 1) {
-        currentRows = appStates.scheduleRowsObj
-        currentRows[0].color = "active"
-        appStates.setScheduleRows(currentRows)
-
-        if (appStates.smokeWarnBool === true) {
-          setTargetTemp("OFF")
-          setTargetInt(0)
-        }
-        else {
-          const newTemp = appStates.scheduleRowsObj[0].temp
-          curTemp = parseInt(newTemp.split(' ')[0])
-
-          setTargetTemp(newTemp)
-          setTargetInt(parseInt(newTemp.split(' ')[0]))
-        }
-        const newTime = appStates.scheduleRowsObj[0].intTime
-        setTimer(newTime)
-        setMaxTime(newTime)
-      }
-      else {
+      if (isRunning && timerCount > 0) {
+        // If it is running, but targetBool is triggered again, the stop button was clicked.
         setIsRunning(false)
+        setTimerIsActive(false)
+
+        // Clear fields
         setTargetTemp("---")
         setTargetInt(0)
-      }
+        setTempEmpty(1)
+        setTempFill(1)
+        setTimeEmpty(1)
+        setTimeFill(1)
 
-      // Set values for visual indicators
-      const tempFillVal = curTemp / maxTemp
-      const tempFillLv1 = 1 - tempFillVal
-      const tempFillLv2 = tempFillLv1 < 0.5 ? 0.5 : tempFillLv1
-      setTempEmpty(tempFillLv1)
-      setTempFill(tempFillLv2)
+        // Set first row to waiting
+        const newRows = appStates.scheduleRowsObj.map((r) => {
+          if (r.index - 1 === 0) {
+            return({
+              num: r.num,
+              temp: r.temp,
+              time: r.time,
+              intTime: r.intTime,
+              color: "waiting",
+              index: r.index,
+            })
+          }
+          return(r)
+        })
+        appStates.setScheduleRows(newRows)
+      }
+      else {
+        setIsRunning(true)
+        setTimerIsActive(true)
+        const maxTemp = appStates.useCelsiusBool ? 260 : 500
+        var tempSetting = 0
+
+        // If there's only one row, it should be the disabled one with the plus button
+        // So, only try to retrieve the row if there is more than one row.
+        if (appStates.scheduleRowsObj.length > 1) {
+          currentRows = appStates.scheduleRowsObj
+          currentRows[0].color = "active"
+          appStates.setScheduleRows(currentRows)
+
+          if (appStates.smokeWarnBool === true) {
+            setTargetTemp("OFF")
+            setTargetInt(0)
+          }
+          else {
+            const newTemp = appStates.scheduleRowsObj[0].temp
+            const newTempInt = parseInt(newTemp.split(' ')[0])
+            tempSetting = isNaN(newTempInt) ? 0 : newTempInt
+
+            setTargetTemp(newTemp)
+            setTargetInt(tempSetting)
+          }
+          const newTime = appStates.scheduleRowsObj[0].intTime
+          setTimer(newTime)
+          setMaxTime(newTime)
+        }
+        else {
+          setIsRunning(false)
+          setTargetTemp("---")
+          setTargetInt(0)
+          setTimer(0)
+          setTimerIsActive(true)
+        }
+
+        // Set values for visual indicators
+        const tempFillVal = tempSetting / maxTemp
+        const tempFillLv1 = 1 - tempFillVal
+        const tempFillLv2 = tempFillLv1 < 0.5 ? 0.5 : tempFillLv1
+        setTempEmpty(tempFillLv1)
+        setTempFill(tempFillLv2)
+      }
     }
 
     // Update timer bar
-    if (maxTime > 0 && isRunning) {
-      const timeFillVal = timerCount / maxTime
+    if (maxTime > 0 && isRunning && timerIsActive) {
+      const curTime = timerCount > -1 ? timerCount : 0
+      const timeFillVal = curTime / maxTime
       const timeFillLv1 = 1 - timeFillVal
       const timeFillLv2 = timeFillLv1 < 0.5 ? 0.5 : timeFillLv1
       setTimeEmpty(timeFillLv1)
@@ -124,17 +161,20 @@ function TargetBlock({ navi }) {
     // Update display when timer hits 0 (-1 just so the value 00:00:00 actually shows up)
     if (isRunning && timerCount === -1) {
       setTimer(0)
+      setTimerIsActive(true)
       appStates.setUpdateSchedule(true)
     }
 
     // Setup the basic timer
-    let interval = setInterval(() => {
-      setTimer(lastTimerCount => {
-          lastTimerCount <= 1 && clearInterval(interval)
-          return lastTimerCount > -1 ? lastTimerCount - 1 : 0
-      })
-    }, 1000)
-    return () => clearInterval(interval)
+    if (timerIsActive) {
+      let interval = setInterval(() => {
+        setTimer(lastTimerCount => {
+            lastTimerCount <= 1 && clearInterval(interval)
+            return lastTimerCount > -1 ? lastTimerCount - 1 : 0
+        })
+      }, 1000)
+      return () => clearInterval(interval)
+    }
   }, [timerCount, appStates.targetBool]);
 
   // When the Fahrenheit/Celsius toggle is used, adjust Target Temperature accordingly
@@ -169,7 +209,7 @@ function TargetBlock({ navi }) {
       (secs < 10) ? "0" + secs.toString() : secs.toString()
 
     return(
-      <Text fontSize={28}>{hrsDisp + ":" + minsDisp + ":" + secsDisp}</Text>
+      <Text fontSize={28 * dims.ar}>{hrsDisp + ":" + minsDisp + ":" + secsDisp}</Text>
     )
   }
 
@@ -179,18 +219,13 @@ function TargetBlock({ navi }) {
 
       {/* Section Title & Settings Button */}
       <HStack p="6px" h="30%" justifyContent="space-between">
-          <Text w="60%" fontSize={24}>Current Setting</Text>
+          <Text w="60%" fontSize={24 * dims.ar}>Current Setting</Text>
           <Button w="40%" h="70%" p="3px" variant="ghost" colorScheme="yellow" bg="yellow.200"
             onPress={() => navi.navigate("Settings")}
           >
-            <Text fontSize={16} color="yellow.600">Display Settings</Text>
+            <Text fontSize={16 * dims.ar} color="yellow.600">Display Settings</Text>
           </Button>
         </HStack>
-
-      {/* Button to send a POST request */}
-      {/* <Center>
-        <Button p="0.5" w="50%" onPress={() => setReqTries(reqTries + 1)}>Try Send</Button>
-      </Center> */}
 
       {/* Labels, Values, and Visual Indicators */}
       <HStack w="100%" h="66%">
@@ -198,11 +233,11 @@ function TargetBlock({ navi }) {
         {/* Target Temp */}
         <VStack w="50%" h="100%" ml="-16px">
           <Center h="50%">
-            <Text fontSize={20}>Target</Text>
-            <Text fontSize={20}>Temperature</Text>
+            <Text fontSize={20 * dims.ar}>Target</Text>
+            <Text fontSize={20 * dims.ar}>Temperature</Text>
             </Center>
           <Center h="50%" pb="25px">
-            <Text fontSize={28} color="orange.500">{targetTemp}</Text>
+            <Text fontSize={28 * dims.ar} color="orange.500">{targetTemp}</Text>
           </Center>
         </VStack>
 
@@ -212,7 +247,7 @@ function TargetBlock({ navi }) {
             colors={['#FFFFFF', '#F36B45', '#F8A647', '#FDE047']}
             locations={[tempEmpty, tempEmpty, tempFill, 1]}
             borderWidth={1} borderRadius={10}>
-              <Text fontSize={11}>{`-\n-\n-\n-`}</Text>
+              <Text fontSize={11 * dims.ar}>{`-\n-\n-\n-`}</Text>
           </LinearGradient>
           <Center w="100%" h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
         </Center>
@@ -220,8 +255,8 @@ function TargetBlock({ navi }) {
         {/* Time Left */}
         <VStack w="40%" h="100%" ml="15px">
           <Center h="50%">
-            <Text fontSize={20}>Time</Text>
-            <Text fontSize={20}>Remaining</Text>
+            <Text fontSize={20 * dims.ar}>Time</Text>
+            <Text fontSize={20 * dims.ar}>Remaining</Text>
           </Center>
           <Center h="50%" pb="25px">
             <TimeDisplay />
@@ -230,7 +265,7 @@ function TargetBlock({ navi }) {
 
         {/* Time Bar */}
         <Center w="5%" h="80%" ml="-5px">
-          <LinearGradient paddingVertical={45} paddingHorizontal={4} borderWidth={1}
+          <LinearGradient paddingVertical={45 * dims.sh} paddingHorizontal={4 * dims.sw} borderWidth={1}
             colors={['#FFFFFF', '#00D4FF', '#1AB5FF', '#1A91FF']} 
             locations={[timeEmpty, timeEmpty, timeFill, 1]} />
         </Center>
