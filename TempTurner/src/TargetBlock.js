@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Platform, useWindowDimensions, Alert } from 'react-native';
+import { Platform, Alert } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import { 
   VStack,
   Center,
@@ -9,7 +10,7 @@ import {
 } from "native-base";
 import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
-import LinearGradient from 'react-native-linear-gradient';
+
 
 function TargetBlock({ navi }) {
   // Grab the ScheduleContext to access shared state variables
@@ -30,7 +31,7 @@ function TargetBlock({ navi }) {
   const [timeFill, setTimeFill] = useState(1)
   const [timeEmpty, setTimeEmpty] = useState(1)
 
-  // Temporary testing variable to control http request
+  // reqTries was a temporary way to test http requests
   const [reqTries, setReqTries] = useState(0)
   const [issueColor, setIssueColor] = useState("light.300")
 

@@ -196,6 +196,14 @@ function ScheduleBlock() {
     var textColor = 
       row.color === "disabled" ? "light.400" : "black"
 
+    const curInd = appStates.scheduleRowsObj.indexOf(row)
+
+    // Set Popover accessibility
+    const canMoveup = curInd > 1
+    const canMovedown = curInd > 0
+    const canDelete = curInd > 0
+    const canOff = curInd > 0
+
     return(
       <HStack w="100%" space={2}>
 
@@ -241,7 +249,7 @@ function ScheduleBlock() {
                   <Popover.Header>Edit Row</Popover.Header>
                   <Popover.Body p="0" pb="1" bg="gray.100">
                     <VStack>
-                      <Pressable isDisabled={isRunning} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
+                      <Pressable isDisabled={isRunning && !canMoveup} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -251,12 +259,14 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text color={isRunning ? "light.300" : "black"} pl="2">Swap with Row Above</Text>
+                                <Text color={(isRunning && !canMoveup) ? "light.300" : "black"} pl="2">
+                                  Swap with Row Above
+                                </Text>
                               </Box>
                             )
                           }}
                       </Pressable>
-                      <Pressable bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
+                      <Pressable isDisabled={isRunning && !canMovedown} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -266,12 +276,14 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text pl="2">Swap with Row Below</Text>
+                                <Text color={(isRunning && !canMovedown) ? "light.300" : "black"} pl="2">
+                                  Swap with Row Below
+                                </Text>
                               </Box>
                             )
                           }}
                       </Pressable>
-                      <Pressable bg="gray.200" w="100%"
+                      <Pressable isDisabled={isRunning && !canDelete} bg="gray.200" w="100%"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -281,12 +293,14 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text pl="2">Delete Row</Text>
+                                <Text color={(isRunning && !canDelete) ? "light.300" : "black"} pl="2">
+                                  Delete Row
+                                </Text>
                               </Box>
                             )
                           }}
                       </Pressable>
-                      <Pressable bg="gray.200" w="100%" borderTopColor="gray.500" borderTopWidth="1"
+                      <Pressable isDisabled={isRunning && !canOff} bg="gray.200" w="100%" borderTopColor="gray.500" borderTopWidth="1"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -296,7 +310,9 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text pl="2">Set Temperature as "OFF"</Text>
+                                <Text color={(isRunning && !canOff) ? "light.300" : "black"} pl="2">
+                                  Set Temperature as "OFF"
+                                </Text>
                               </Box>
                             )
                           }}

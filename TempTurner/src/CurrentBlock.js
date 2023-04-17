@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Platform, useWindowDimensions } from 'react-native';
+import { Platform } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/AntDesign';
 import { 
   VStack,
   Center,
@@ -8,20 +10,19 @@ import {
   Button,
   Box,
 } from "native-base";
-import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
-import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/AntDesign';
+import { styles, dims } from './Styles';
+
 
 function CurrentBlock({ navi }) {
   const appStates = useContext(ScheduleContext)
   
-  // State variables to contain wifi-related info
-  // reqTries is a temporary way to control and test the sending of http requests
+  // State variables to contain data
+  // reqTries was a temporary way to test http requests
   const [reqTries, setReqTries] = useState(0)
-  const [currentTemp, setCurrentTemp] = useState("---")
   const [issueColor, setIssueColor] = useState("light.300")
 
+  const [currentTemp, setCurrentTemp] = useState("---")
   const [smokeLevel, setSmokeLevel] = useState("---")
   const [smokeLevelInt, setSmokeLevelInt] = useState(0)
   
@@ -30,8 +31,7 @@ function CurrentBlock({ navi }) {
 
   // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
   useEffect(() => {
-    // Testing purposes
-    // appStates.setSmokeWarn(true)
+    // Checking for successful http request
     var hasErr = false
 
     fetch('http://172.20.10.14')
@@ -61,7 +61,7 @@ function CurrentBlock({ navi }) {
       else { appStates.setSmokeWarn(false) }
     setSmokeLevel(smokeQuality)
 
-    // Set values for visual indicators
+    // Set values for thermometer indicator
     setSmokeLevelInt(smokeQualityInt)
     const maxTemp = appStates.useCelsiusBool ? 260 : 500
     const curTemp = parseInt(tempFromText)
@@ -102,6 +102,15 @@ function CurrentBlock({ navi }) {
           </VStack>
 
           {/* Thermometer */}
+          {/* 
+            LinearGradient: for the colors and locations arrays, left to right corresponds to top to bottom.
+
+            For n colors (excluding white/empty color), where x = n-1, and y = 0 to start,
+            the base full bar values should be y, 0/x, 1/x, 2/x ... x/x.
+
+            You want to algorithmically change y based on how empty you want the bar to be.
+            There should not be any value lower than y i.e. if y > 1/x, then set locations[indexof(1/x)] = y.
+          */}
           <Center w="5%" h="80%" ml="-20px">
             <LinearGradient paddingBottom={18} paddingRight={2}
               colors={['#FFFFFF', '#F36B45', '#F8A647', '#FDE047']}
@@ -130,13 +139,14 @@ function CurrentBlock({ navi }) {
           </VStack>
 
           {/* Clouds */}
+          {/* "cloud" is filled, "cloudo" is outline */}
           <Center w="15%" h="80%" ml="-15px">
             <Icon marginBottom={-15} marginLeft={-20} size={50} color="#78716c"
-              name={smokeLevelInt > 2 ? "cloud" :"cloudo"} />
+              name={smokeLevelInt > 2 ? "cloud" : "cloudo"} />
             <Icon marginBottom={-10} marginLeft={-20} size={40} color="#a8a29e" 
-              name={smokeLevelInt > 1 ? "cloud" :"cloudo"} />
+              name={smokeLevelInt > 1 ? "cloud" : "cloudo"} />
             <Icon marginRight={25} size={30} color="#f5f5f4" 
-              name={smokeLevelInt > 0 ? "cloud" :"cloudo"} />
+              name={smokeLevelInt > 0 ? "cloud" : "cloudo"} />
           </Center>
 
         </HStack>

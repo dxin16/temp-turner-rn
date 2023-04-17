@@ -13,7 +13,7 @@ As a brief summary of the files in `TempTurner/src`, most of the main content is
 For the other files, `App.js` is a high-level wrapper for the three blocks; it also sets up the ScheduleContext and contains the other screens for the app (Camera and Settings). `Styles.js` will include a style sheet that allows for dynamic changing of how the app looks depending on the device. It is currently not implemented yet. 
 
 Remaining goals (optional):
- - Implement `Styles.js` to accomodate many phone sizes
+ - Optimize `Styles.js` to accomodate many phone sizes
  - Storage of "recipes" / saved schedules
  - Make it possible to specify exactly where to move a row
  - Work on overall app appearance and style

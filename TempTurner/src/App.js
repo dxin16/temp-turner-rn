@@ -1,27 +1,25 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Platform, useWindowDimensions } from 'react-native';
+import { Platform, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { WebView } from 'react-native-webview';
+import SplashScreen from 'react-native-splash-screen';
 import { 
   NativeBaseProvider,
   VStack,
   Text,
   HStack,
   Switch,
-  Center,
-  Box,
 } from "native-base";
 import CurrentBlock from './CurrentBlock';
 import TargetBlock from './TargetBlock';
 import ScheduleBlock from './ScheduleBlock';
-import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
-import { WebView } from 'react-native-webview';
-import SplashScreen from 'react-native-splash-screen';
+import { styles, dims } from './Styles';
+
 
 // Main screen
-// Use Native Base for UI - sectioning off parts of app
-// Primary UI structure is VStacks and HStacks with various blocks contained in the stacks
+// Primary UI organization uses VStack/HStack (Vertical/Horizontal)
 function HomeScreen({ navigation }) {
   useEffect(() => {
     SplashScreen.hide()
@@ -44,6 +42,7 @@ function HomeScreen({ navigation }) {
 
 // Placeholder screen to contain camera view
 // Put the address where the camera is being streamed in uri
+// todo: Orientation Stuff, basic camera settings
 function CameraScreen() {
   return (
     <NativeBaseProvider>
@@ -54,6 +53,8 @@ function CameraScreen() {
 
 // Screen to hold some display settings
 // Currently only has the Fahrenheit/Celsius toggle
+// todo: Set "warmup" period, like an oven or something
+// todo: Settable camera and http uris
 function SettingsScreen() {
   const appStates = useContext(ScheduleContext)
 
@@ -155,6 +156,13 @@ function App() {
   // Return/render the main app
   return (
     <ScheduleContext.Provider value={scheduleSettings}>
+      <StatusBar
+        animated={true}
+        backgroundColor="white"
+        barStyle={"dark-content"}
+        showHideTransition={"fade"}
+        hidden={false}
+      />
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Temp Turner" component={HomeScreen} />
