@@ -11,8 +11,8 @@ const char* password = "hijason123";
 WebServer server(80);
 
 // Analog pins for temperature and smoke sensors
-const int tempPin = 35;
-const int smokePin = 34;
+const int tempPin = 34;
+const int smokePin = 35;
 
 // Current temperature and smoke level
 int currentTemp = 0;
