@@ -128,12 +128,13 @@ function SettingsScreen() {
                 </Radio>
               </HStack>
             </Radio.Group>
-            <Input p="2" h="80%" w="47%" mr="1" borderColor="black" fontSize={20 * dims.ar} textAlign="center" 
+            <Input p="2" h="80%" w="47%" mr="1" borderColor="black" fontSize={20 * dims.ar} textAlign="center" keyboardType="url"
             placeholder={appStates.serverURIstring.split("/")[2]} 
             onFocus={() => setShowServerTip(true)} onBlur={() => setShowServerTip(false)} 
             onEndEditing={(e) => {
               const uriRoot = serverRadio === "1" ? "http://" : "https://"
-              appStates.setServerURI(uriRoot + e.nativeEvent.text)
+              const newURI = e.nativeEvent.text !== "" ? uriRoot + e.nativeEvent.text : appStates.serverURIstring
+              appStates.setServerURI(newURI)
             }} />
           </HStack>
 
@@ -160,12 +161,13 @@ function SettingsScreen() {
                 </Radio>
               </HStack>
             </Radio.Group>
-            <Input p="2" h="80%" w="47%" mr="1" borderColor="black" fontSize={20 * dims.ar} textAlign="center" 
+            <Input p="2" h="80%" w="47%" mr="1" borderColor="black" fontSize={20 * dims.ar} textAlign="center" keyboardType="url"
             placeholder={appStates.cameraURIstring.split("/")[2]} 
             onFocus={() => setShowCameraTip(true)} onBlur={() => setShowCameraTip(false)} 
             onEndEditing={(e) => {
               const uriRoot = cameraRadio === "1" ? "http://" : "https://"
-              appStates.setCameraURI(uriRoot + e.nativeEvent.text)
+              const newURI = e.nativeEvent.text !== "" ? uriRoot + e.nativeEvent.text : appStates.cameraURIstring
+              appStates.setCameraURI(newURI)
             }} />
           </HStack>
         </VStack>

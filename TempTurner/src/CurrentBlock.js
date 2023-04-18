@@ -63,8 +63,8 @@ function CurrentBlock({ navi }) {
       const tempDiff = Math.abs(parseInt(tempFromText) - curTargetTemp)
   
       if (curTargetTemp > 0) {
-        const percentDiff = Math.floor(tempDiff / curTargetTemp * 100) ; console.log(percentDiff)
-        const isInTol = percentDiff <= appStates.toleranceNum; console.log(isInTol)
+        const percentDiff = Math.floor(tempDiff / curTargetTemp * 100)
+        const isInTol = percentDiff <= appStates.toleranceNum
         appStates.setTolWithin(isInTol)
       }
     }
@@ -146,7 +146,7 @@ function CurrentBlock({ navi }) {
               <Text fontSize={20 * dims.ar}>Level</Text>
             </Center>
             <Center h="50%" pb="25px">
-              <Text pb="25px" fontSize={28} 
+              <Text pb="25px" fontSize={28 * dims.ar} 
                 color={
                   smokeLevel === "---" ? "black" :
                   smokeLevel === "Low" ? "green.600" :
