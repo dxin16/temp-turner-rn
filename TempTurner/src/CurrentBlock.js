@@ -85,6 +85,7 @@ function CurrentBlock({ navi }) {
     const smokeValue = parseFloat(smokeFromText)
     const smokeQuality    = smokeValue < 1 ? "Low" : smokeValue < 3 ? "Medium" : "High"
     const smokeQualityInt = smokeValue < 1 ?   1   : smokeValue < 3 ?     2    :    3
+    // Disabled for now, not implemented in sensor system yet (won't be due to testing restrictions).
     // if (smokeQuality === "High") { appStates.setSmokeWarn(true) }
     //   else { appStates.setSmokeWarn(false) }
     setSmokeLevel(smokeQuality)
