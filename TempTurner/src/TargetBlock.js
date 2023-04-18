@@ -18,6 +18,7 @@ function TargetBlock({ navi }) {
   const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
 
   // Set the target and timer displays
+  const [loneTimer, setLoneTimer] = useState(0)
   const [timerCount, setTimer] = useState(0)
   const [timerIsActive, setTimerIsActive] = useState(true)
   const [targetTemp, setTargetTemp] = useState("---")
@@ -34,12 +35,12 @@ function TargetBlock({ navi }) {
   // reqTries was a temporary way to test http requests
   const [reqTries, setReqTries] = useState(0)
   const [issueColor, setIssueColor] = useState("light.300")
-
+  
   // Send data to ESP32 (http POST -> ESP32 web server @ its ip)
   useEffect(() => {
     var hasErr = false
     
-    // Always send target temp as fahrenheit
+    // Always send target temp as celsius
     const postTemp = appStates.useCelsiusBool ? targetInt : Math.round((targetInt - 32) * 5/9)
 
     fetch(appStates.serverURIstring + "/target", {
@@ -171,15 +172,15 @@ function TargetBlock({ navi }) {
       let interval = setInterval(() => {
         setTimer(lastTimerCount => {
           lastTimerCount <= 1 && clearInterval(interval)
-          // if (!appStates.toleranceWith) {
-          //   return lastTimerCount
-          // }
+          if (!appStates.toleranceWith && appStates.toleranceEn) {
+            return lastTimerCount
+          }
           return lastTimerCount > -1 ? lastTimerCount - 1 : 0
         })
       }, 1000)
       return () => clearInterval(interval)
     }
-  }, [timerCount, appStates.targetBool]);
+  }, [timerCount, appStates.targetBool, appStates.toleranceWith]);
 
   // When the Fahrenheit/Celsius toggle is used, adjust Target Temperature accordingly
   useEffect(() => {

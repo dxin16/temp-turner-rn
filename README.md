@@ -51,7 +51,7 @@ Prepare two terminal windows/tabs. Both should be in the `TempTurner` directory.
 
 On the first terminal, call `npx react-native start` to initiate a metro server with watchman (this will take full control of the first terminal).
 
-On the second terminal, you can perform everything else needed to run the code. I believe the first thing you have to do is call `npm install` on the packages I've used so far:
+On the second terminal, you can perform everything else needed to run the code. I believe the first thing you have to do is call `npm install` on the packages I've used so far: 
  - Follow the instructions [here.](https://reactnavigation.org/docs/getting-started/)
     - This is the package for navigating between screens.
  - Follow the instructions [here](https://docs.nativebase.io/install-rn) in the "Existing Project" tab.
@@ -59,6 +59,8 @@ On the second terminal, you can perform everything else needed to run the code. 
  - `npm install --save react-native-webview`
     - This is to access the camera, which will stream to an IP address on the local network.
  - The first two are links because they have multiple dependencies that need to be installed.
+
+Some packages aren't listed, I will look into a more automated way for this.
 
 After installing the necessary packages, call `npx pod-install` to install pods for IOS. Then call `npx react-native run-ios` and/or `npx react-native run-android` depending on which emulators you have available.
 

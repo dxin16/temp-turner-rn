@@ -34,7 +34,8 @@ function CurrentBlock({ navi }) {
     // Checking for successful http request
     var hasErr = false
 
-    // SetCurrentValues("Current Temperature: 250 Current Smoke Level: 0.50")
+    // Hard code some values
+    // SetCurrentValues("Current Temperature: 140 Current Smoke Level: 0.50")
 
     fetch(appStates.serverURIstring)
       .then(response => response.text())
@@ -48,28 +49,37 @@ function CurrentBlock({ navi }) {
       if (!hasErr) {setIssueColor("light.300")}
     })
   })
+
+  // Whenever tolerance enable is toggled, reset the within boolean
+  useEffect(() => {
+    appStates.setTolWithin(true)
+  }, [appStates.toleranceEn])
   
   // Parse values that are received via GET
   function SetCurrentValues(text) {
-    const tempFromText = text.match(/Current Temperature: ([0-9.])*/g)[0].split(' ').pop()
+    // The retrieved temp is always in celsius.
+    const tempFromText = text.match(/Current Temperature: ([0-9.-])*/g)[0].split(' ').pop()
+    const tempFah = Math.round((parseInt(tempFromText) * 9/5) + 32)
     const smokeFromText = text.match(/Current Smoke Level: ([0-9.])*/g)[0].split(' ').pop()
-    const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
-    setCurrentTemp(tempFromText + tempUnitSuffix)
+
+    const tempValString = appStates.useCelsiusBool ? tempFromText : tempFah.toString()
+    const tempUnitSuffix = appStates.useCelsiusBool ?   " °C"     :       " °F"
+    setCurrentTemp(tempValString + tempUnitSuffix)
 
     if (appStates.toleranceEn) {
       const targetTemp = appStates.scheduleRowsObj[0].temp
       const targetTempInt = parseInt(targetTemp.split(' ')[0])
       const curTargetTemp = isNaN(targetTempInt) ? 0 : targetTempInt
-      const tempDiff = Math.abs(parseInt(tempFromText) - curTargetTemp)
+      const tempDiff = Math.abs(parseInt(tempValString) - curTargetTemp)
   
       if (curTargetTemp > 0) {
         const percentDiff = Math.floor(tempDiff / curTargetTemp * 100)
         const isInTol = percentDiff <= appStates.toleranceNum
+        // console.log("Percentage: " + percentDiff + "%")
+        // console.log("Tolerance: " + appStates.toleranceNum + "%")
+        // console.log("isWithin: " + isInTol ? "true" : "false")
         appStates.setTolWithin(isInTol)
       }
-    }
-    else {
-      appStates.setTolWithin(true)
     }
 
     const smokeValue = parseFloat(smokeFromText)
@@ -82,9 +92,10 @@ function CurrentBlock({ navi }) {
     // Set values for thermometer indicator
     setSmokeLevelInt(smokeQualityInt)
     const maxTemp = appStates.useCelsiusBool ? 260 : 500
-    const curTemp = parseInt(tempFromText)
+    const curTemp = parseInt(tempValString)
     const fillVal = curTemp / maxTemp
-    const fillLv1 = 1 - fillVal
+    const fillNorm = fillVal > 1 ? 1 : fillVal < 0 ? 0 : fillVal 
+    const fillLv1 = 1 - fillNorm
     const fillLv2 = fillLv1 < 0.5 ? 0.5 : fillLv1
     setEmptyLevel(fillLv1)
     setFillLevel(fillLv2)
@@ -128,6 +139,8 @@ function CurrentBlock({ navi }) {
 
             You want to algorithmically change y based on how empty you want the bar to be.
             There should not be any value lower than y i.e. if y > 1/x, then set locations[indexof(1/x)] = y.
+
+            emptyLevel corresponds to y, fillLevel is 1/2 at start and becomes equal to emptyLevel when emptyLevel > 1/2
           */}
           <Center w="5%" h="80%" ml="-20px">
             <LinearGradient paddingBottom={18} paddingRight={2}
