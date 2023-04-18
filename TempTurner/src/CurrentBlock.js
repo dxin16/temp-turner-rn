@@ -34,7 +34,9 @@ function CurrentBlock({ navi }) {
     // Checking for successful http request
     var hasErr = false
 
-    fetch('http://172.20.10.14')
+    // SetCurrentValues("Current Temperature: 250 Current Smoke Level: 0.50")
+
+    fetch(appStates.serverURIstring)
       .then(response => response.text())
       .then(text => SetCurrentValues(text))
     .catch(error => {
@@ -45,7 +47,7 @@ function CurrentBlock({ navi }) {
     .finally(() => {
       if (!hasErr) {setIssueColor("light.300")}
     })
-  }, [reqTries])
+  })
   
   // Parse values that are received via GET
   function SetCurrentValues(text) {
@@ -54,11 +56,27 @@ function CurrentBlock({ navi }) {
     const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
     setCurrentTemp(tempFromText + tempUnitSuffix)
 
+    if (appStates.toleranceEn) {
+      const targetTemp = appStates.scheduleRowsObj[0].temp
+      const targetTempInt = parseInt(targetTemp.split(' ')[0])
+      const curTargetTemp = isNaN(targetTempInt) ? 0 : targetTempInt
+      const tempDiff = Math.abs(parseInt(tempFromText) - curTargetTemp)
+  
+      if (curTargetTemp > 0) {
+        const percentDiff = Math.floor(tempDiff / curTargetTemp * 100) ; console.log(percentDiff)
+        const isInTol = percentDiff <= appStates.toleranceNum; console.log(isInTol)
+        appStates.setTolWithin(isInTol)
+      }
+    }
+    else {
+      appStates.setTolWithin(true)
+    }
+
     const smokeValue = parseFloat(smokeFromText)
     const smokeQuality    = smokeValue < 1 ? "Low" : smokeValue < 3 ? "Medium" : "High"
     const smokeQualityInt = smokeValue < 1 ?   1   : smokeValue < 3 ?     2    :    3
-    if (smokeQuality === "High") { appStates.setSmokeWarn(true) }
-      else { appStates.setSmokeWarn(false) }
+    // if (smokeQuality === "High") { appStates.setSmokeWarn(true) }
+    //   else { appStates.setSmokeWarn(false) }
     setSmokeLevel(smokeQuality)
 
     // Set values for thermometer indicator
@@ -106,7 +124,7 @@ function CurrentBlock({ navi }) {
             LinearGradient: for the colors and locations arrays, left to right corresponds to top to bottom.
 
             For n colors (excluding white/empty color), where x = n-1, and y = 0 to start,
-            the base full bar values should be y, 0/x, 1/x, 2/x ... x/x.
+            the base full bar values (evenly distributed gradient) should be y, 0/x, 1/x, 2/x ... x/x.
 
             You want to algorithmically change y based on how empty you want the bar to be.
             There should not be any value lower than y i.e. if y > 1/x, then set locations[indexof(1/x)] = y.

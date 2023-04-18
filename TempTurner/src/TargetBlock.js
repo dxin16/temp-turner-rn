@@ -40,9 +40,9 @@ function TargetBlock({ navi }) {
     var hasErr = false
     
     // Always send target temp as fahrenheit
-    const postTemp = appStates.useCelsiusBool ? Math.round((targetInt * 9/5) + 32) : targetInt
+    const postTemp = appStates.useCelsiusBool ? targetInt : Math.round((targetInt - 32) * 5/9)
 
-    fetch('http://172.20.10.14/target', {
+    fetch(appStates.serverURIstring + "/target", {
       method: 'POST',
       headers: {
       },
@@ -56,7 +56,7 @@ function TargetBlock({ navi }) {
     .finally(() => {
       if (!hasErr) {setIssueColor("light.300")}
     })
-  }, [reqTries])
+  })
 
   // Cause changes based on ScheduleContext
   useEffect(() => {    
@@ -170,8 +170,11 @@ function TargetBlock({ navi }) {
     if (timerIsActive) {
       let interval = setInterval(() => {
         setTimer(lastTimerCount => {
-            lastTimerCount <= 1 && clearInterval(interval)
-            return lastTimerCount > -1 ? lastTimerCount - 1 : 0
+          lastTimerCount <= 1 && clearInterval(interval)
+          // if (!appStates.toleranceWith) {
+          //   return lastTimerCount
+          // }
+          return lastTimerCount > -1 ? lastTimerCount - 1 : 0
         })
       }, 1000)
       return () => clearInterval(interval)

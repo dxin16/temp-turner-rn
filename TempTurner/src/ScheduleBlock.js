@@ -60,6 +60,11 @@ function ScheduleBlock() {
 
       currentRows = appStates.scheduleRowsObj
       currentRows.shift()
+      currentRows.forEach((row, ind) => {
+        row.num = row.num === "+" ? row.num : ind + 1
+        row.index = ind + 1
+        setNumRows(ind + 1)
+      })
       appStates.setScheduleRows(currentRows)
 
       setNumRows(appStates.scheduleRowsObj.length)
@@ -197,12 +202,13 @@ function ScheduleBlock() {
       row.color === "disabled" ? "light.400" : "black"
 
     const curInd = appStates.scheduleRowsObj.indexOf(row)
+    const lastInd = appStates.scheduleRowsObj.length - 2
 
     // Set Popover accessibility
-    const canMoveup = curInd > 1
-    const canMovedown = curInd > 0
-    const canDelete = curInd > 0
-    const canOff = curInd > 0
+    const canMoveup = isRunning ? curInd > 1 : curInd > 0
+    const canMovedown = isRunning ? curInd > 0 && (curInd < lastInd) : curInd < lastInd
+    const canDelete = isRunning ? curInd > 0 : true
+    const canOff = isRunning ? curInd > 0 : true
 
     return(
       <HStack w="100%" space={2}>
@@ -249,7 +255,7 @@ function ScheduleBlock() {
                   <Popover.Header>Edit Row</Popover.Header>
                   <Popover.Body p="0" pb="1" bg="gray.100">
                     <VStack>
-                      <Pressable isDisabled={isRunning && !canMoveup} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
+                      <Pressable isDisabled={!canMoveup} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -259,14 +265,14 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text color={(isRunning && !canMoveup) ? "light.300" : "black"} pl="2">
+                                <Text color={(!canMoveup) ? "light.300" : "black"} pl="2">
                                   Swap with Row Above
                                 </Text>
                               </Box>
                             )
                           }}
                       </Pressable>
-                      <Pressable isDisabled={isRunning && !canMovedown} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
+                      <Pressable isDisabled={!canMovedown} bg="gray.200" w="100%" borderBottomColor="gray.500" borderBottomWidth="1"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -276,14 +282,14 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text color={(isRunning && !canMovedown) ? "light.300" : "black"} pl="2">
+                                <Text color={(!canMovedown) ? "light.300" : "black"} pl="2">
                                   Swap with Row Below
                                 </Text>
                               </Box>
                             )
                           }}
                       </Pressable>
-                      <Pressable isDisabled={isRunning && !canDelete} bg="gray.200" w="100%"
+                      <Pressable isDisabled={!canDelete} bg="gray.200" w="100%"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -293,14 +299,14 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text color={(isRunning && !canDelete) ? "light.300" : "black"} pl="2">
+                                <Text color={(!canDelete) ? "light.300" : "black"} pl="2">
                                   Delete Row
                                 </Text>
                               </Box>
                             )
                           }}
                       </Pressable>
-                      <Pressable isDisabled={isRunning && !canOff} bg="gray.200" w="100%" borderTopColor="gray.500" borderTopWidth="1"
+                      <Pressable isDisabled={!canOff} bg="gray.200" w="100%" borderTopColor="gray.500" borderTopWidth="1"
                         onPress={() => {
                           setRowEditInfo({
                             rowNum: row.num,
@@ -310,7 +316,7 @@ function ScheduleBlock() {
                           {({ isPressed }) => {
                             return (
                               <Box bg={isPressed ? "gray.200" : "gray.100"} p="2">
-                                <Text color={(isRunning && !canOff) ? "light.300" : "black"} pl="2">
+                                <Text color={(!canOff) ? "light.300" : "black"} pl="2">
                                   Set Temperature as "OFF"
                                 </Text>
                               </Box>
@@ -472,7 +478,6 @@ function ScheduleBlock() {
       {/* Modal for inputting time */}
       <Modal isOpen={showTimeModal} avoidKeyboard={true} onClose={() => setShowTimeModal(false)}>
         <Modal.Content maxWidth="400px">
-          <Modal.CloseButton />
           <Modal.Header>{`Set Time for Row ${callingRow}`}</Modal.Header>
 
           {/* The body holds the input labels and input areas */}
@@ -481,7 +486,7 @@ function ScheduleBlock() {
             <HStack space={1}>
               <FormControl w="30%">
                 <FormControl.Label>Hours</FormControl.Label>
-                <Input p="1" fontSize={18 * dims.ar} textAlign="center" 
+                <Input p="1" fontSize={18 * dims.ar} textAlign="center" keyboardType="number-pad"
                   placeholder={
                     appStates.scheduleRowsObj[callingRow - 1] ?
                     appStates.scheduleRowsObj[callingRow - 1].time.split(":")[0] : "00"
@@ -512,7 +517,7 @@ function ScheduleBlock() {
               
               <FormControl w="30%">
                 <FormControl.Label>Minutes</FormControl.Label>
-                <Input p="1" fontSize={18 * dims.ar} textAlign="center"
+                <Input p="1" fontSize={18 * dims.ar} textAlign="center" keyboardType="number-pad"
                   placeholder={
                     appStates.scheduleRowsObj[callingRow - 1] ?
                     appStates.scheduleRowsObj[callingRow - 1].time.split(":")[1] : "00"
@@ -543,7 +548,7 @@ function ScheduleBlock() {
 
               <FormControl w="30%">
                 <FormControl.Label>Seconds</FormControl.Label>
-                <Input p="1" fontSize={18 * dims.ar} textAlign="center"
+                <Input p="1" fontSize={18 * dims.ar} textAlign="center" keyboardType="number-pad"
                   placeholder={
                     appStates.scheduleRowsObj[callingRow - 1] ?
                     appStates.scheduleRowsObj[callingRow - 1].time.split(":")[2] : "00"
@@ -619,7 +624,6 @@ function ScheduleBlock() {
       {/* Modal for inputting temp...keyboardavoidingview wouldn't work */}
       <Modal isOpen={showTempModal} avoidKeyboard={true} onClose={() => setShowTempModal(false)}>
         <Modal.Content maxWidth="400px">
-          <Modal.CloseButton />
           <Modal.Header>{`Set Temperature for Row ${callingRow}`}</Modal.Header>
 
           {/* The body holds the input labels and input areas */}
@@ -627,7 +631,7 @@ function ScheduleBlock() {
           <Modal.Body>
             <FormControl w="100%">
               <FormControl.Label>Temperature {appStates.useCelsiusBool ? "(°C)" : "(°F)"}</FormControl.Label>
-              <Input p="1" fontSize={18 * dims.ar} textAlign="center" 
+              <Input p="1" fontSize={18 * dims.ar} textAlign="center" keyboardType="number-pad"
                 placeholder={
                   appStates.scheduleRowsObj[callingRow - 1] ? 
                   appStates.scheduleRowsObj[callingRow - 1].temp : "---" + tempUnitSuffix
