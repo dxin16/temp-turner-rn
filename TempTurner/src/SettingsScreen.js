@@ -32,12 +32,13 @@ function SettingsScreen() {
   const [serverRadio, setServerRadio] = useState("1")
   const [cameraRadio, setCameraRadio] = useState("1")
   const [showModal, setShowModal] = useState(false)
-  const [inTolerance, setInTolerance] = useState(101)
+  const [inTolerance, setInTolerance] = useState(101)  // 101 will be equivalent to empty field
 
   // Add a field to enable tolerance :)
   return (
     <NativeBaseProvider>
 
+      {/* "Units" header */}
       <HStack h="10%" mt="-3">
         <Center w="100%">
           <HStack>
@@ -48,6 +49,7 @@ function SettingsScreen() {
         </Center>
       </HStack>
 
+      {/* Temperature Units switch */}
       <HStack p="5" mt="-5" w="100%" h="10%">
         <Text fontSize={20 * dims.ar} w="70%">Temperature Units</Text>
         <Text fontSize={20 * dims.ar}>°F</Text>
@@ -57,6 +59,7 @@ function SettingsScreen() {
         <Text fontSize={20 * dims.ar}>°C</Text>
       </HStack>
 
+      {/* "URIs" header */}
       <HStack mt="-5" h="10%">
         <Center w="100%">
           <HStack>
@@ -67,6 +70,7 @@ function SettingsScreen() {
         </Center>
       </HStack>
 
+      {/* Server URI radio and input */}
       <HStack p="5" mt="-7" w="100%" h="15%">
         <VStack w="100%">
           <Tooltip label={`This value will likely change\ndepending on network. Set it to\nwhere the ESP32 puts up the server.`} isOpen={showServerTip} placement="top left">
@@ -101,6 +105,7 @@ function SettingsScreen() {
         </VStack>
       </HStack>
 
+      {/* Camera URI radio and input */}
       <HStack p="5" mt="-3" w="100%" h="15%">
         <VStack w="100%">
           <Tooltip label={`This value will likely change\ndepending on network. Set it to\nwhere the ESP32 puts up the camera.`} isOpen={showCameraTip} placement="top left">
@@ -133,6 +138,7 @@ function SettingsScreen() {
         </VStack>
       </HStack>
 
+      {/* "Tolerance" header */}
       <HStack mt="-3" h="10%">
         <Center w="100%">
           <HStack>
@@ -143,6 +149,7 @@ function SettingsScreen() {
         </Center>
       </HStack>
 
+      {/* Tolerance switch */}
       <HStack p="5" mt="-5" w="100%" h="10%">
         <Text fontSize={20 * dims.ar} w="67%">Enable Tolerance</Text>
         <Text fontSize={20 * dims.ar}>Off</Text>
@@ -152,9 +159,8 @@ function SettingsScreen() {
         <Text fontSize={20 * dims.ar}>On</Text>
       </HStack>
 
-      {/* You might need to avoid sending target temp while not in the threshold */}
-      {/* for the process of turning off stove to get accurate measurement */}
-      {/* Gotta avoid the keyboard again... */}
+      {/* Tolerance input */}
+      {/* Possible issue: process of turning off stove to get accurate measurement */}
       <HStack p="5" mt="-5" w="100%" h="15%">
 
         <Tooltip label={`The timer won't tick down unless\nCurrent Temp is within the set %\nof Target Temp.`} 
@@ -177,7 +183,7 @@ function SettingsScreen() {
 
       </HStack>
 
-      {/* Modal for inputting temp...keyboardavoidingview wouldn't work */}
+      {/* Modal for inputting tolerance */}
       <Modal isOpen={showModal} avoidKeyboard={true} onClose={() => setShowModal(false)}>
         <Modal.Content maxWidth="400px">
           <Modal.Header>Set Tolerance Value</Modal.Header>

@@ -332,7 +332,6 @@ function ScheduleBlock() {
 
         {/* This is the input temperature area for each row */}
         {/* It will update the scheduleRows array when the user inputs a value and hits enter/return */}
-
         <Center w="40%" bg={bgColor} borderWidth={1} borderColor={textColor}>
           <Button p="1" variant="unstyled" 
             onPress={() => {
@@ -393,7 +392,7 @@ function ScheduleBlock() {
     <Center w="95%" h="42%" bg="light.300" rounded="md" shadow={3}>
       <VStack w="100%">
 
-        {/* Section Title & Start Button */}
+        {/* Section Title & Start/Stop Button */}
         <HStack p="6px" h="15%" justifyContent="space-between">
           <Text w="50%" fontSize={24 * dims.ar}>Scheduling</Text>
           {

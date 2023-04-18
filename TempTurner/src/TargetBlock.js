@@ -18,7 +18,6 @@ function TargetBlock({ navi }) {
   const tempUnitSuffix = appStates.useCelsiusBool ? " °C" : " °F"
 
   // Set the target and timer displays
-  const [loneTimer, setLoneTimer] = useState(0)
   const [timerCount, setTimer] = useState(0)
   const [timerIsActive, setTimerIsActive] = useState(true)
   const [targetTemp, setTargetTemp] = useState("---")
@@ -42,7 +41,6 @@ function TargetBlock({ navi }) {
     
     // Always send target temp as celsius
     const postTemp = appStates.useCelsiusBool ? targetInt : Math.round((targetInt - 32) * 5/9)
-
     fetch(appStates.serverURIstring + "/target", {
       method: 'POST',
       headers: {
@@ -60,7 +58,9 @@ function TargetBlock({ navi }) {
   })
 
   // Cause changes based on ScheduleContext
+  // This useEffect is too big, see if you can move the if (appStates.targetBool) block out
   useEffect(() => {    
+    // Smoke Alert...this one is fine to trigger on timer
     if (appStates.smokeWarnBool === true) {
       appStates.setSmokeWarn(false)
       Alert.alert(
@@ -72,11 +72,13 @@ function TargetBlock({ navi }) {
     }
     
     // When the Start Schedule button is pressed, this will change to true
+    // This part only runs when targetBool is true...
+    // It doesn't need to be in this giant useEffect, but it doesn't run everytime so it's okay.
     if (appStates.targetBool) {
       appStates.setUpdateTarget(false)
 
+      // If it is running, but targetBool is triggered again, the stop button was clicked.
       if (isRunning && timerCount > 0) {
-        // If it is running, but targetBool is triggered again, the stop button was clicked.
         setIsRunning(false)
         setTimerIsActive(false)
 
@@ -110,8 +112,7 @@ function TargetBlock({ navi }) {
         const maxTemp = appStates.useCelsiusBool ? 260 : 500
         var tempSetting = 0
 
-        // If there's only one row, it should be the disabled one with the plus button
-        // So, only try to retrieve the row if there is more than one row.
+        // If there's only one row, it would be the disabled one with the plus button (nothing to run).
         if (appStates.scheduleRowsObj.length > 1) {
           currentRows = appStates.scheduleRowsObj
           currentRows[0].color = "active"
@@ -173,7 +174,7 @@ function TargetBlock({ navi }) {
         setTimer(lastTimerCount => {
           lastTimerCount <= 1 && clearInterval(interval)
           if (!appStates.toleranceWith && appStates.toleranceEn) {
-            return lastTimerCount
+            return lastTimerCount  // Stop timer if not within tolerance range
           }
           return lastTimerCount > -1 ? lastTimerCount - 1 : 0
         })

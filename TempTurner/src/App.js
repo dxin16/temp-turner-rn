@@ -39,7 +39,6 @@ function HomeScreen({ navigation }) {
 }
 
 // Placeholder screen to contain camera view
-// Put the address where the camera is being streamed in uri
 function CameraScreen() {
   const appStates = useContext(ScheduleContext)
   return (
