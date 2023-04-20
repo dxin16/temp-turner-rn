@@ -19,6 +19,7 @@ function TargetBlock({ navi }) {
 
   // Set the target and timer displays
   const [timerCount, setTimer] = useState(0)
+  const [constantTimer, setConstantTimer] = useState(0)
   const [timerIsActive, setTimerIsActive] = useState(true)
   const [targetTemp, setTargetTemp] = useState("---")
   const [targetInt, setTargetInt] = useState(0)
@@ -183,6 +184,17 @@ function TargetBlock({ navi }) {
     }
   }, [timerCount, appStates.targetBool, appStates.toleranceWith]);
 
+  // Extra timer
+  useEffect(() => {
+    let interval = setInterval(() => {
+      setConstantTimer(lastTimerCount => {
+        lastTimerCount <= 1 && clearInterval(interval)
+        return (lastTimerCount + 1) % 10
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [constantTimer])
+
   // When the Fahrenheit/Celsius toggle is used, adjust Target Temperature accordingly
   useEffect(() => {
     if (targetInt > 0) {
@@ -214,9 +226,12 @@ function TargetBlock({ navi }) {
       (secs <= 0) ? "00" : 
       (secs < 10) ? "0" + secs.toString() : secs.toString()
 
-    return(
-      <Text fontSize={28 * dims.ar}>{hrsDisp + ":" + minsDisp + ":" + secsDisp}</Text>
-    )
+    if (!appStates.toleranceWith && constantTimer % 2 && isRunning) {
+      return( <Text fontSize={28 * dims.ar}>Preheat</Text> )
+    }
+    else {
+      return( <Text fontSize={28 * dims.ar}>{hrsDisp + ":" + minsDisp + ":" + secsDisp}</Text> )
+    }
   }
 
   return(

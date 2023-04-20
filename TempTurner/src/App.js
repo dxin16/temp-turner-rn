@@ -67,7 +67,7 @@ function CameraScreen() {
         <WebView source={{ uri: appStates.cameraURIstring }} />
 
         {/* Help/Guide for using the camera */}
-        <Popover defaultIsOpen={false} placement="left top" trigger={triggerProps => {
+        <Popover defaultIsOpen={true} placement="left top" trigger={triggerProps => {
           return (
             <Pressable h="100%" w="100%" borderBottomColor="gray.500" borderBottomWidth="1" {...triggerProps}>
               {({ isPressed }) => {
@@ -82,13 +82,14 @@ function CameraScreen() {
               <Popover.Arrow bg="gray.100" />
               <Popover.CloseButton />
               <Popover.Header>Camera Info</Popover.Header>
-              <Popover.Body p="2" bg="gray.100">
+              <Popover.Body p="1" bg="gray.100">
                 <VStack>
-                  <Text>Basic View: Scroll down to the bottom of the settings on the left side and hit "Start Stream".</Text>
-                  <Text>The stream itself is stuck to the top of the scrollable area.</Text>
-                  <Text></Text>
-                  <Text>Scaling: Set Output Size in Advanced Settings {">"} Window. Current device dimensions:</Text>
-                  <Text>Width: {landscapeWidth}, Height: {landscapeHeight}</Text>
+                  <Text fontSize={13}>Basic View: Scroll to the bottom of the settings on the left side and hit "Start Stream".</Text>
+                  <Text fontSize={13}></Text>
+                  <Text fontSize={13}>Scaling: Set Output Size in Advanced Settings {">"} Window. Current device dimensions:</Text>
+                  <Text fontSize={13}>Width: {landscapeWidth}, Height: {landscapeHeight}</Text>
+                  <Text fontSize={13}></Text>
+                  <Text fontSize={13}>The easiest way to find the stream is to scroll to the top and close the settings.</Text>
                 </VStack>
               </Popover.Body>
             </Popover.Content>

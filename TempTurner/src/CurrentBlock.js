@@ -35,7 +35,7 @@ function CurrentBlock({ navi }) {
     var hasErr = false
 
     // Hard code some values
-    // SetCurrentValues("Current Temperature: 140 Current Smoke Level: 0.50")
+    SetCurrentValues("Current Temperature: 100 Current Smoke Level: 0.50")
 
     fetch(appStates.serverURIstring)
       .then(response => response.text())

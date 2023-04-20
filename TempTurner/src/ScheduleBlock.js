@@ -19,6 +19,7 @@ import { styles, dims } from './Styles';
 import ScheduleContext from './ScheduleContext';
 import { useIsFocused } from '@react-navigation/native';
 
+
 function ScheduleBlock() {
   // Grab the ScheduleContext to access shared state variables
   const appStates = useContext(ScheduleContext)
@@ -336,8 +337,13 @@ function ScheduleBlock() {
           <Button p="1" variant="unstyled" 
             onPress={() => {
               if (row.num !== "+") {
+                if (row.color === "active") {
+                  Alert.alert("Schedule is Running", "You can't change this value right now. Stop the schedule if you would like to.")
+                }
+                else {
                 setCallingRow(row.index)
                 setShowTempModal(true)
+                }
               }
             }}>
             <Text fontSize={24 * dims.ar} color={textColor}>{row.temp}</Text>
@@ -351,8 +357,13 @@ function ScheduleBlock() {
           <Button p="1" variant="unstyled" 
             onPress={() => {
               if (row.num !== "+") {
+                if (row.color === "active") {
+                  Alert.alert("Schedule is Running", "You can't change this value right now. Stop the schedule if you would like to.")
+                }
+                else {
                 setCallingRow(row.index)
                 setShowTimeModal(true)
+                }
               }
             }}>
             <Text fontSize={24 * dims.ar} color={textColor}>{row.time}</Text>

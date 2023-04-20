@@ -19,11 +19,9 @@ import ScheduleContext from './ScheduleContext';
 import { styles, dims } from './Styles';
 
 
-// Screen to hold some display settings
-// Currently only has the Fahrenheit/Celsius toggle
+// Screen to hold some settings
 // todo: Set "warmup" period, like an oven or something
-// todo: Settable camera and http uris
-// todo: limit http request rate
+// todo: limit http request rate?
 function SettingsScreen() {
   const appStates = useContext(ScheduleContext)
   const [showWarmupTip, setShowWarmupTip] = useState(false)
