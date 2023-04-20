@@ -7,6 +7,11 @@ import SplashScreen from 'react-native-splash-screen';
 import { 
   NativeBaseProvider,
   VStack,
+  Popover,
+  Pressable,
+  Center,
+  Text,
+  HStack,
 } from "native-base";
 import CurrentBlock from './CurrentBlock';
 import TargetBlock from './TargetBlock';
@@ -41,9 +46,54 @@ function HomeScreen({ navigation }) {
 // Placeholder screen to contain camera view
 function CameraScreen() {
   const appStates = useContext(ScheduleContext)
+  var landscapeWidth
+  var landscapeHeight
+
+  // These values in dims may not update when turning to landscape since they
+  // are defined when the app starts, which happens in portrait mode.
+  if (dims.h > dims.w) {
+    landscapeWidth = dims.h
+    landscapeHeight = dims.w
+  }
+  else {
+    landscapeWidth = dims.w
+    landscapeHeight = dims.h
+  }
+
   return (
     <NativeBaseProvider>
-      <WebView source={{ uri: appStates.cameraURIstring }} />
+      {/* appStates.cameraURIstring */}
+      <HStack h="100%">
+        <WebView source={{ uri: appStates.cameraURIstring }} />
+
+        {/* Help/Guide for using the camera */}
+        <Popover defaultIsOpen={false} placement="left top" trigger={triggerProps => {
+          return (
+            <Pressable h="100%" w="100%" borderBottomColor="gray.500" borderBottomWidth="1" {...triggerProps}>
+              {({ isPressed }) => {
+                return (
+                  <Center w="100%" h="100%" p="1" px="3" bg="light.400" justifyContent="flex-start">
+                    <Text fontSize={16 * dims.ar}>?</Text>
+                  </Center>
+              )}}
+            </Pressable>
+          )}}>
+            <Popover.Content accessibilityLabel="Camera Info" w="56">
+              <Popover.Arrow bg="gray.100" />
+              <Popover.CloseButton />
+              <Popover.Header>Camera Info</Popover.Header>
+              <Popover.Body p="2" bg="gray.100">
+                <VStack>
+                  <Text>Basic View: Scroll down to the bottom of the settings on the left side and hit "Start Stream".</Text>
+                  <Text>The stream itself is stuck to the top of the scrollable area.</Text>
+                  <Text></Text>
+                  <Text>Scaling: Set Output Size in Advanced Settings {">"} Window. Current device dimensions:</Text>
+                  <Text>Width: {landscapeWidth}, Height: {landscapeHeight}</Text>
+                </VStack>
+              </Popover.Body>
+            </Popover.Content>
+          </Popover>
+      </HStack>
     </NativeBaseProvider>
   );
 }
