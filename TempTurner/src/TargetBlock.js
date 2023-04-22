@@ -56,7 +56,7 @@ function TargetBlock({ navi }) {
     .finally(() => {
       if (!hasErr) {setIssueColor("light.300")}
     })
-  })
+  }, [constantTimer])
 
   // Cause changes based on ScheduleContext
   // This useEffect is too big, see if you can move the if (appStates.targetBool) block out

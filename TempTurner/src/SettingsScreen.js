@@ -20,7 +20,6 @@ import { styles, dims } from './Styles';
 
 
 // Screen to hold some settings
-// todo: Set "warmup" period, like an oven or something
 // todo: limit http request rate?
 function SettingsScreen() {
   const appStates = useContext(ScheduleContext)

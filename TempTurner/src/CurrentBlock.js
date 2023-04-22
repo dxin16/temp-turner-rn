@@ -20,6 +20,7 @@ function CurrentBlock({ navi }) {
   // State variables to contain data
   // reqTries was a temporary way to test http requests
   const [reqTries, setReqTries] = useState(0)
+  const [constantTimer, setConstantTimer] = useState(0)
   const [issueColor, setIssueColor] = useState("light.300")
 
   const [currentTemp, setCurrentTemp] = useState("---")
@@ -29,13 +30,17 @@ function CurrentBlock({ navi }) {
   const [fillLevel, setFillLevel] = useState(1)
   const [emptyLevel, setEmptyLevel] = useState(1)
 
+  const [autoTemp, setAutoTemp] = useState(0)
+
   // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
   useEffect(() => {
     // Checking for successful http request
     var hasErr = false
 
     // Hard code some values
-    SetCurrentValues("Current Temperature: 100 Current Smoke Level: 0.50")
+    // if (autoTemp > 260) { setAutoTemp(0) } 
+    // else {setAutoTemp(autoTemp + 10)}
+    // SetCurrentValues(`Current Temperature: ${autoTemp} Current Smoke Level: 0.50`)
 
     fetch(appStates.serverURIstring)
       .then(response => response.text())
@@ -48,7 +53,18 @@ function CurrentBlock({ navi }) {
     .finally(() => {
       if (!hasErr) {setIssueColor("light.300")}
     })
-  })
+  }, [constantTimer])
+
+  // Extra timer, used to limit htpp request rate
+  useEffect(() => {
+    let interval = setInterval(() => {
+      setConstantTimer(lastTimerCount => {
+        lastTimerCount <= 1 && clearInterval(interval)
+        return (lastTimerCount + 1) % 10
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [constantTimer])
 
   // Whenever tolerance enable is toggled, reset the within boolean
   useEffect(() => {
