@@ -146,6 +146,16 @@ function SettingsScreen() {
         </Center>
       </HStack>
 
+      {/* Smoke Warn switch */}
+      <HStack p="5" mt="-5" w="100%" h="10%">
+        <Text fontSize={20 * dims.ar} w="67%">Enable Smoke Warning</Text>
+        <Text fontSize={20 * dims.ar}>Off</Text>
+        <Switch size="sm" offTrackColor="blue.200" onTrackColor="blue.200" isChecked={appStates.warnEnBool}
+          onToggle={() => appStates.setWarnEnable(!appStates.warnEnBool)}
+        />
+        <Text fontSize={20 * dims.ar}>On</Text>
+      </HStack>
+
       {/* Tolerance switch */}
       <HStack p="5" mt="-5" w="100%" h="10%">
         <Text fontSize={20 * dims.ar} w="67%">Enable Tolerance</Text>

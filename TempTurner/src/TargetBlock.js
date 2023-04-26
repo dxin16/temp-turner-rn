@@ -35,6 +35,8 @@ function TargetBlock({ navi }) {
   // reqTries was a temporary way to test http requests
   const [reqTries, setReqTries] = useState(0)
   const [issueColor, setIssueColor] = useState("light.300")
+  const [alertActive, setAlertActive] = useState(false)
+  const [needsReset, setNeedsReset] = useState(false)
   
   // Send data to ESP32 (http POST -> ESP32 web server @ its ip)
   useEffect(() => {
@@ -42,6 +44,7 @@ function TargetBlock({ navi }) {
     
     // Always send target temp as celsius
     const postTemp = appStates.useCelsiusBool ? targetInt : Math.round((targetInt - 32) * 5/9)
+    // console.log(postTemp)
     fetch(appStates.serverURIstring + "/target", {
       method: 'POST',
       headers: {
@@ -58,19 +61,42 @@ function TargetBlock({ navi }) {
     })
   }, [constantTimer])
 
-  // Cause changes based on ScheduleContext
-  // This useEffect is too big, see if you can move the if (appStates.targetBool) block out
-  useEffect(() => {    
-    // Smoke Alert...this one is fine to trigger on timer
-    if (appStates.smokeWarnBool === true) {
-      appStates.setSmokeWarn(false)
+  function HighSmokeAlert() {
+    return (
       Alert.alert(
         "High Smoke Level Detected", 
         `Please quickly attend to your stove. Target Temperature will be set to OFF.
         \nPress OK when you have lowered the smoke level. This alert will continue to display until "High" is not detected.`,
-        [{text: 'OK', onPress: () => appStates.setSmokeWarn(true)}]
-        )
-    }
+        [{text: 'OK', onPress: () => { setAlertActive(false); setNeedsReset(true) }}]
+      )
+    )
+  }
+
+  // Cause changes based on ScheduleContext
+  // This useEffect is too big, see if you can move the if (appStates.targetBool) block out
+  useEffect(() => {    
+    // Smoke Alert...this one is fine to trigger on timer
+    // if (appStates.smokeWarnBool) {      
+    //   Alert.alert(
+    //     "High Smoke Level Detected", 
+    //     `Please quickly attend to your stove. Target Temperature will be set to OFF.
+    //     \nPress OK when you have lowered the smoke level. This alert will continue to display until "High" is not detected.`,
+    //     [{text: 'OK', onPress: () => {
+    //       if (appStates.smokeWarnBool) {
+    //         appStates.setSmokeWarn(false)
+    //       }
+    //       else {
+    //         const newTemp = appStates.scheduleRowsObj[0].temp
+    //         const newTempInt = parseInt(newTemp.split(' ')[0])
+    //         const tempSetting = isNaN(newTempInt) ? 0 : newTempInt
+
+    //         setTargetTemp(newTemp)
+    //         setTargetInt(tempSetting)
+    //         setTimerIsActive(true)
+    //       }
+    //     }}]
+    //   )
+    // }
     
     // When the Start Schedule button is pressed, this will change to true
     // This part only runs when targetBool is true...
@@ -119,18 +145,18 @@ function TargetBlock({ navi }) {
           currentRows[0].color = "active"
           appStates.setScheduleRows(currentRows)
 
-          if (appStates.smokeWarnBool === true) {
-            setTargetTemp("OFF")
-            setTargetInt(0)
-          }
-          else {
+          // if (appStates.smokeWarnBool === true) {
+          //   setTargetTemp("OFF")
+          //   setTargetInt(0)
+          // }
+          // else {
             const newTemp = appStates.scheduleRowsObj[0].temp
             const newTempInt = parseInt(newTemp.split(' ')[0])
             tempSetting = isNaN(newTempInt) ? 0 : newTempInt
 
             setTargetTemp(newTemp)
             setTargetInt(tempSetting)
-          }
+          // }
           const newTime = appStates.scheduleRowsObj[0].intTime
           setTimer(newTime)
           setMaxTime(newTime)
@@ -207,6 +233,31 @@ function TargetBlock({ navi }) {
       setTargetInt(newTemp)
     }
   }, [appStates.useCelsiusBool])
+
+  useEffect(() => {
+    // console.log("smoke " + appStates.smokeWarnBool)
+    // console.log("alert " + alertActive)
+    if (appStates.smokeWarnBool && !alertActive) { 
+      setTimerIsActive(false)
+      setTargetTemp("OFF")
+      setTargetInt(0)
+      setAlertActive(true)
+      setNeedsReset(false)
+      HighSmokeAlert()
+    }
+    if (!appStates.smokeWarnBool && !alertActive && needsReset) {
+      const newTemp = appStates.scheduleRowsObj[0].temp
+      const newTempInt = parseInt(newTemp.split(' ')[0])
+      const tempSetting = isNaN(newTempInt) ? 0 : newTempInt
+
+      setNeedsReset(false)
+      setTargetTemp(newTemp)
+      setTargetInt(tempSetting)
+      setTimerIsActive(true)
+      setTimer(timerCount + 1)
+      setTimer(timerCount - 1)
+    }
+  }, [appStates.smokeWarnBool, constantTimer])
 
   // Function to manage time display to look correct for hh:mm:ss format
   function TimeDisplay() {

@@ -9,6 +9,7 @@ import {
   Text,
   Button,
   Box,
+  Badge,
 } from "native-base";
 import ScheduleContext from './ScheduleContext';
 import { styles, dims } from './Styles';
@@ -31,6 +32,7 @@ function CurrentBlock({ navi }) {
   const [emptyLevel, setEmptyLevel] = useState(1)
 
   const [autoTemp, setAutoTemp] = useState(0)
+  const [autoSmoke, setAutoSmoke] = useState(0)
 
   // Receive data from ESP32 (http get -> ESP32 webpage @ its ip)
   useEffect(() => {
@@ -38,9 +40,11 @@ function CurrentBlock({ navi }) {
     var hasErr = false
 
     // Hard code some values
-    // if (autoTemp > 260) { setAutoTemp(0) } 
-    // else {setAutoTemp(autoTemp + 10)}
-    // SetCurrentValues(`Current Temperature: ${autoTemp} Current Smoke Level: 0.50`)
+    if (autoTemp >= 260) { setAutoTemp(0) } 
+    else {setAutoTemp(autoTemp + 5)}
+    if (autoSmoke >= 2600) { setAutoSmoke(0) } 
+    else {setAutoSmoke(autoSmoke + 50)}
+    SetCurrentValues(`Current Temperature: ${autoTemp} Current Smoke Level: ${autoSmoke}`)
 
     fetch(appStates.serverURIstring)
       .then(response => response.text())
@@ -55,14 +59,14 @@ function CurrentBlock({ navi }) {
     })
   }, [constantTimer])
 
-  // Extra timer, used to limit htpp request rate
+  // Extra timer, used to limit http request rate
   useEffect(() => {
     let interval = setInterval(() => {
       setConstantTimer(lastTimerCount => {
         lastTimerCount <= 1 && clearInterval(interval)
         return (lastTimerCount + 1) % 10
       })
-    }, 1000)
+    }, 500)
     return () => clearInterval(interval)
   }, [constantTimer])
 
@@ -98,12 +102,19 @@ function CurrentBlock({ navi }) {
       }
     }
 
-    const smokeValue = parseFloat(smokeFromText)
-    const smokeQuality    = smokeValue < 1 ? "Low" : smokeValue < 3 ? "Medium" : "High"
-    const smokeQualityInt = smokeValue < 1 ?   1   : smokeValue < 3 ?     2    :    3
+    const smokeValue = parseInt(smokeFromText)
+    // 4095 represents 3.3V output from the smoke sensor
+    // At normal, clearly smokeless conditions, value is around 900
+    const smokeQuality    = smokeValue < 800 ? "---" : smokeValue < 1600 ? "Low" : smokeValue < 2300 ? "Medium" : "High"
+    const smokeQualityInt = smokeValue < 800 ?   0   : smokeValue < 1600 ?   1   : smokeValue < 2300 ?     2    :    3
     // Disabled for now, not implemented in sensor system yet (won't be due to testing restrictions).
-    // if (smokeQuality === "High") { appStates.setSmokeWarn(true) }
-    //   else { appStates.setSmokeWarn(false) }
+    if (smokeQuality === "High" && appStates.scheduleRowsObj[0].color === "active" && appStates.warnEnBool) { 
+      appStates.setSmokeWarn(true) 
+    }
+    else { 
+      appStates.setSmokeWarn(false) 
+    }
+    // console.log(appStates.smokeWarnBool)
     setSmokeLevel(smokeQuality)
 
     // Set values for thermometer indicator
@@ -171,6 +182,10 @@ function CurrentBlock({ navi }) {
           
           {/* Smoke Level */}
           <VStack w="40%" h="100%" ml="15px">
+
+          <Badge bg={smokeLevelInt ? "red.500" : "light.300"} w="10%" h="15%"
+           rounded="full" mb="-18px" mr={5} zIndex={1} variant="solid" alignSelf="flex-end"> </Badge>
+
             <Center h="50%">
               <Text fontSize={20 * dims.ar}>Smoke</Text>
               <Text fontSize={20 * dims.ar}>Level</Text>

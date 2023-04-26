@@ -129,8 +129,9 @@ function App() {
   const [tolValue, setTolValue] = useState(50)
   const [tolEnable, setTolEnable] = useState(false)
   const [tolWithin, setTolWithin] = useState(true)
-  const [serverURI, setServerURI] = useState("http://172.20.10.14")
+  const [serverURI, setServerURI] = useState("http://172.20.10.4")
   const [cameraURI, setCameraURI] = useState("http://172.20.10.2")
+  const [warnEnable, setWarnEnable] = useState(false)
   
   // Define the ScheduleContext values
   const scheduleSettings = {
@@ -144,6 +145,7 @@ function App() {
     toleranceWith: tolWithin, setTolWithin,
     serverURIstring: serverURI, setServerURI,
     cameraURIstring: cameraURI, setCameraURI,
+    warnEnBool: warnEnable, setWarnEnable,
   }
 
   // Return/render the main app
