@@ -40,11 +40,11 @@ function CurrentBlock({ navi }) {
     var hasErr = false
 
     // Hard code some values
-    if (autoTemp >= 260) { setAutoTemp(0) } 
-    else {setAutoTemp(autoTemp + 5)}
-    if (autoSmoke >= 2600) { setAutoSmoke(0) } 
-    else {setAutoSmoke(autoSmoke + 50)}
-    SetCurrentValues(`Current Temperature: ${autoTemp} Current Smoke Level: ${autoSmoke}`)
+    // if (autoTemp >= 260) { setAutoTemp(0) } 
+    // else {setAutoTemp(autoTemp + 5)}
+    // if (autoSmoke >= 2600) { setAutoSmoke(0) } 
+    // else {setAutoSmoke(autoSmoke + 50)}
+    // SetCurrentValues(`Current Temperature: ${autoTemp} Current Smoke Level: ${autoSmoke}`)
 
     fetch(appStates.serverURIstring)
       .then(response => response.text())
