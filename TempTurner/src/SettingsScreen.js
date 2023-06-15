@@ -14,6 +14,7 @@ import {
   Modal,
   FormControl,
   Radio,
+  Slider,
 } from "native-base";
 import ScheduleContext from './ScheduleContext';
 import { styles, dims } from './Styles';
@@ -30,17 +31,18 @@ function SettingsScreen() {
   const [cameraRadio, setCameraRadio] = useState("1")
   const [showModal, setShowModal] = useState(false)
   const [inTolerance, setInTolerance] = useState(101)  // 101 will be equivalent to empty field
+  const [incSpdDisp, setIncSpdDisp] = useState(appStates.incSpeed)
 
   // Add a field to enable tolerance :)
   return (
     <NativeBaseProvider>
 
-      {/* "Units" header */}
+      {/* "Temp" header */}
       <HStack h="10%" mt="-3">
         <Center w="100%">
           <HStack>
             <Box m="4" borderWidth={1} w="35%" h="1%" borderColor="light.400"></Box>
-            <Text fontSize={20 * dims.ar} w="15%" textAlign="center" color="light.400">Units</Text>
+            <Text fontSize={20 * dims.ar} w="15%" textAlign="center" color="light.400">Temp</Text>
             <Box m="4" borderWidth={1} w="35%" h="1%" borderColor="light.400"></Box>
           </HStack>
         </Center>
@@ -55,6 +57,32 @@ function SettingsScreen() {
         />
         <Text fontSize={20 * dims.ar}>°C</Text>
       </HStack>
+
+      {/* Auto Increment Speed slider */}
+      <VStack p="5" mt="-5" w="100%" h="12%">
+        <Text fontSize={20 * dims.ar}>Auto Increment Speed</Text>
+
+        <HStack w="100%">
+          <Slider ml={3} w="82%" defaultValue={appStates.incSpeed} minValue={0} maxValue={20} colorScheme="darkBlue"
+            onChange={v => {
+              setIncSpdDisp(v)
+            }}
+            onChangeEnd={v => {
+              appStates.setAutoIncSpd(v)
+            }}
+          >
+            <Slider.Track>
+              <Slider.FilledTrack bg="blue.300" />
+            </Slider.Track>
+            <Slider.Thumb bg="blue.300" />
+          </Slider>
+
+          <Center w="17%">
+            <Text fontSize={20}>{incSpdDisp}</Text>
+          </Center>
+        </HStack>
+
+      </VStack>
 
       {/* "URIs" header */}
       <HStack mt="-5" h="10%">

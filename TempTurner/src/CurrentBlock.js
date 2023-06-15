@@ -40,23 +40,23 @@ function CurrentBlock({ navi }) {
     var hasErr = false
 
     // Hard code some values
-    // if (autoTemp >= 260) { setAutoTemp(0) } 
-    // else {setAutoTemp(autoTemp + 5)}
-    // if (autoSmoke >= 2600) { setAutoSmoke(0) } 
-    // else {setAutoSmoke(autoSmoke + 50)}
-    // SetCurrentValues(`Current Temperature: ${autoTemp} Current Smoke Level: ${autoSmoke}`)
+    if (autoTemp >= 260) { setAutoTemp(0) } 
+    else {setAutoTemp(autoTemp + appStates.incSpeed)}
+    if (autoSmoke >= 2600) { setAutoSmoke(0) } 
+    else {setAutoSmoke(autoSmoke + appStates.incSpeed * 10)}
+    SetCurrentValues(`Current Temperature: ${autoTemp} Current Smoke Level: ${autoSmoke}`)
 
-    fetch(appStates.serverURIstring)
-      .then(response => response.text())
-      .then(text => SetCurrentValues(text))
-    .catch(error => {
-      //console.error(error)
-      setIssueColor("red.600")
-      hasErr = true
-    })
-    .finally(() => {
-      if (!hasErr) {setIssueColor("light.300")}
-    })
+    // fetch(appStates.serverURIstring)
+    //   .then(response => response.text())
+    //   .then(text => SetCurrentValues(text))
+    // .catch(error => {
+    //   //console.error(error)
+    //   setIssueColor("red.600")
+    //   hasErr = true
+    // })
+    // .finally(() => {
+    //   if (!hasErr) {setIssueColor("light.300")}
+    // })
   }, [constantTimer])
 
   // Extra timer, used to limit http request rate
@@ -177,20 +177,20 @@ function CurrentBlock({ navi }) {
               borderWidth={1} borderRadius={10}>
                 <Text fontSize={11 * dims.ar}>{`-\n-\n-\n-`}</Text>
             </LinearGradient>
-            <Center w="100%" h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
+            <Center w={`${100 * dims.ar}%`} h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
           </Center>
           
           {/* Smoke Level */}
           <VStack w="40%" h="100%" ml="15px">
 
-          <Badge bg={smokeLevelInt ? "red.500" : "light.300"} w="10%" h="15%"
-           rounded="full" mb="-18px" mr={5} zIndex={1} variant="solid" alignSelf="flex-end"> </Badge>
+          {/* <Badge bg={smokeLevelInt ? "red.500" : "light.300"} w="10%" h="15%"
+           rounded="full" mb="-18px" mr={5} zIndex={1} variant="solid" alignSelf="flex-end"> </Badge> */}
 
             <Center h="50%">
               <Text fontSize={20 * dims.ar}>Smoke</Text>
               <Text fontSize={20 * dims.ar}>Level</Text>
             </Center>
-            <Center h="50%" pb="25px">
+            <Center h="50%" pb="20px">
               <Text pb="25px" fontSize={28 * dims.ar} 
                 color={
                   smokeLevel === "---" ? "black" :

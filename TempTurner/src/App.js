@@ -132,6 +132,7 @@ function App() {
   const [serverURI, setServerURI] = useState("http://172.20.10.4")
   const [cameraURI, setCameraURI] = useState("http://172.20.10.2")
   const [warnEnable, setWarnEnable] = useState(false)
+  const [autoIncSpd, setAutoIncSpd] = useState(5)
   
   // Define the ScheduleContext values
   const scheduleSettings = {
@@ -146,6 +147,7 @@ function App() {
     serverURIstring: serverURI, setServerURI,
     cameraURIstring: cameraURI, setCameraURI,
     warnEnBool: warnEnable, setWarnEnable,
+    incSpeed: autoIncSpd, setAutoIncSpd,
   }
 
   // Return/render the main app

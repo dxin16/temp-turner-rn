@@ -15,7 +15,8 @@ const height = Dimensions.get("window").height
 // Currently, this is mostly for font scaling.
 const scaleWidth = width / 390
 const scaleHeight = height / 844
-const areaRatio = scaleWidth * scaleHeight
+const sqrtScale = Math.sqrt(scaleWidth * scaleHeight)
+const areaRatio = sqrtScale < 1 ? 0.95 * sqrtScale : sqrtScale
 
 const dims = {
   w: width,

@@ -45,20 +45,20 @@ function TargetBlock({ navi }) {
     // Always send target temp as celsius
     const postTemp = appStates.useCelsiusBool ? targetInt : Math.round((targetInt - 32) * 5/9)
     // console.log(postTemp)
-    fetch(appStates.serverURIstring + "/target", {
-      method: 'POST',
-      headers: {
-      },
-      body: `temp=${postTemp}`
-    })
-    .catch(error => {
-      //console.error(error)
-      setIssueColor("red.600")
-      hasErr = true
-    })
-    .finally(() => {
-      if (!hasErr) {setIssueColor("light.300")}
-    })
+    // fetch(appStates.serverURIstring + "/target", {
+    //   method: 'POST',
+    //   headers: {
+    //   },
+    //   body: `temp=${postTemp}`
+    // })
+    // .catch(error => {
+    //   //console.error(error)
+    //   setIssueColor("red.600")
+    //   hasErr = true
+    // })
+    // .finally(() => {
+    //   if (!hasErr) {setIssueColor("light.300")}
+    // })
   }, [constantTimer])
 
   function HighSmokeAlert() {
@@ -75,29 +75,6 @@ function TargetBlock({ navi }) {
   // Cause changes based on ScheduleContext
   // This useEffect is too big, see if you can move the if (appStates.targetBool) block out
   useEffect(() => {    
-    // Smoke Alert...this one is fine to trigger on timer
-    // if (appStates.smokeWarnBool) {      
-    //   Alert.alert(
-    //     "High Smoke Level Detected", 
-    //     `Please quickly attend to your stove. Target Temperature will be set to OFF.
-    //     \nPress OK when you have lowered the smoke level. This alert will continue to display until "High" is not detected.`,
-    //     [{text: 'OK', onPress: () => {
-    //       if (appStates.smokeWarnBool) {
-    //         appStates.setSmokeWarn(false)
-    //       }
-    //       else {
-    //         const newTemp = appStates.scheduleRowsObj[0].temp
-    //         const newTempInt = parseInt(newTemp.split(' ')[0])
-    //         const tempSetting = isNaN(newTempInt) ? 0 : newTempInt
-
-    //         setTargetTemp(newTemp)
-    //         setTargetInt(tempSetting)
-    //         setTimerIsActive(true)
-    //       }
-    //     }}]
-    //   )
-    // }
-    
     // When the Start Schedule button is pressed, this will change to true
     // This part only runs when targetBool is true...
     // It doesn't need to be in this giant useEffect, but it doesn't run everytime so it's okay.
@@ -321,7 +298,7 @@ function TargetBlock({ navi }) {
             borderWidth={1} borderRadius={10}>
               <Text fontSize={11 * dims.ar}>{`-\n-\n-\n-`}</Text>
           </LinearGradient>
-          <Center w="100%" h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
+          <Center w={`${100 * dims.ar}%`} h="20%" mt="-2" bg="yellow.300" borderRadius={20} borderWidth={1.4} borderTopWidth={0} />
         </Center>
 
         {/* Time Left */}
