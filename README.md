@@ -6,6 +6,9 @@ Purdue Spring 2023 - ECE 49022 Section 2 - Team 22: The Temp Turner
 
 This is the repo for our project's code. Most of the files contained are standard files that React Native requires to run. The main Temp Turner mobile app code implementation can be found in `TempTurner/src`. Code involving the ESP32 and the motor can be found in `Arduino_ESP32`.
 
+The project is completed and this repo is ready to sit here till the end of time :)
+I tried to publish the app to the App Store, but it doesn't really have enough use or functionality without the rest of the project. 
+
 ## Current Progress (Mobile App)
 
 As a brief summary of the files in `TempTurner/src`, most of the main content is in `CurrentBlock.js`, `TargetBlock.js`, and `ScheduleBlock.js`. These correspond to the three main blocks you see on the app screen when it loads. Using `ScheduleContext.js` makes it possible to coordinate the app's Blocks and Screens with each other.
