@@ -64,7 +64,8 @@ function CameraScreen() {
     <NativeBaseProvider>
       {/* appStates.cameraURIstring */}
       <HStack h="100%">
-        <WebView source={{ uri: appStates.cameraURIstring }} />
+        <Center w="96.5%" h="100%" bg="white" />
+        {/* <WebView source={{ uri: appStates.cameraURIstring }} /> */}
 
         {/* Help/Guide for using the camera */}
         <Popover defaultIsOpen={true} placement="left top" trigger={triggerProps => {
@@ -132,7 +133,7 @@ function App() {
   const [serverURI, setServerURI] = useState("http://172.20.10.4")
   const [cameraURI, setCameraURI] = useState("http://172.20.10.2")
   const [warnEnable, setWarnEnable] = useState(false)
-  const [autoIncSpd, setAutoIncSpd] = useState(5)
+  const [autoIncSpd, setAutoIncSpd] = useState(0)
   
   // Define the ScheduleContext values
   const scheduleSettings = {

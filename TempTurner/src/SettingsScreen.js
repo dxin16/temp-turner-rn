@@ -124,7 +124,7 @@ function SettingsScreen() {
               const uriRoot = serverRadio === "1" ? "http://" : "https://"
               const newURI = e.nativeEvent.text !== "" ? uriRoot + e.nativeEvent.text : appStates.serverURIstring
               appStates.setServerURI(newURI)
-            }} />
+            }} maxLength={15} />
           </HStack>
 
         </VStack>
@@ -158,7 +158,7 @@ function SettingsScreen() {
               const uriRoot = cameraRadio === "1" ? "http://" : "https://"
               const newURI = e.nativeEvent.text !== "" ? uriRoot + e.nativeEvent.text : appStates.cameraURIstring
               appStates.setCameraURI(newURI)
-            }} />
+            }} maxLength={15} />
           </HStack>
         </VStack>
       </HStack>
